@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Зерно и пар — меню</title>
+
+<!-- Библиотека Telegram: создаёт объект window.Telegram.WebApp,
+     через который страница общается с приложением Telegram -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* Цвета берём из темы Telegram (переменные --tg-theme-* выставляет библиотека).
+     Значение после запятой — запасное, для обычного браузера. */
+  :root {
+    --bg:   var(--tg-theme-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #22201e);
+    --hint: var(--tg-theme-hint-color, #8b857f);
+    --card: var(--tg-theme-secondary-bg-color, #f3f0ed);
+    --brand: #7b4a26;          /* фирменный цвет кофейни */
+    --brand-text: #ffffff;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-brand: "Unbounded", var(--font-ui);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:   var(--tg-theme-bg-color, #191817);
+      --text: var(--tg-theme-text-color, #f1ede9);
+      --hint: var(--tg-theme-hint-color, #9a948e);
+      --card: var(--tg-theme-secondary-bg-color, #262422);
+      --brand: #d39a66;
+      --brand-text: #1b1712;
+    }
+  }
+  /* Внутри Telegram тему сообщает сам Telegram (см. applyScheme в скрипте) */
+  :root[data-scheme="light"] { --brand: #7b4a26; --brand-text: #ffffff; }
+  :root[data-scheme="dark"]  { --brand: #d39a66; --brand-text: #1b1712; }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.45 var(--font-ui);
+    padding: 0 16px calc(100px + env(safe-area-inset-bottom, 0px));
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero { padding: 28px 0 4px; }
+  .brand {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .where { color: var(--hint); margin: 8px 0 0; font-size: 15px; }
+
+  .tabs {
+    display: flex; gap: 8px;
+    overflow-x: auto; scrollbar-width: none;
+    padding: 16px 0 8px;
+    position: sticky; top: 0; z-index: 2;
+    background: var(--bg);
+  }
+  .tab {
+    flex: none; border: 0; border-radius: 999px;
+    padding: 8px 16px;
+    font: 500 15px var(--font-ui);
+    background: var(--card); color: var(--text);
+    cursor: pointer;
+  }
+  .tab[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+
+  .list { list-style: none; margin: 0; padding: 0; }
+  .item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--card);
+  }
+  .name { font-weight: 600; }
+  .desc { color: var(--hint); font-size: 14px; }
+  .price { margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+  .add {
+    flex: none; border: 0; border-radius: 12px;
+    padding: 9px 14px;
+    background: var(--brand); color: var(--brand-text);
+    font: 600 15px var(--font-ui);
+    cursor: pointer;
+  }
+  .qty {
+    flex: none; display: flex; align-items: center; gap: 4px;
+    background: var(--card); border-radius: 12px; padding: 3px;
+  }
+  .qty button {
+    width: 36px; height: 36px; border: 0; border-radius: 10px;
+    background: var(--bg); color: var(--text);
+    font-size: 20px; cursor: pointer;
+  }
+  .qty span { min-width: 24px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .checkout { margin-top: 24px; padding: 16px; background: var(--card); border-radius: 18px; }
+  .checkout h2 { font-family: var(--font-brand); font-weight: 500; font-size: 18px; margin: 0; }
+  .label { display: block; font-size: 14px; color: var(--hint); margin: 14px 0 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 1px solid var(--hint); border-radius: 999px;
+    background: transparent; color: var(--text);
+    padding: 7px 12px; font: 15px var(--font-ui); cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-text); }
+  input {
+    width: 100%; padding: 12px; border: 0; border-radius: 12px;
+    background: var(--bg); color: var(--text); font: 16px var(--font-ui);
+  }
+
+  /* Кнопка для обычного браузера. В Telegram вместо неё — родная MainButton */
+  .fallback {
+    position: fixed; left: 16px; right: 16px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding: 15px; border: 0; border-radius: 14px;
+    background: var(--brand); color: var(--brand-text);
+    font: 600 16px var(--font-ui); cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1 class="brand">Зерно и пар</h1>
+  <p class="where">Кофе с собой на Пятницкой, 12. Готовим за 7 минут.</p>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Разделы меню"></nav>
+<ul class="list" id="list"></ul>
+
+<section class="checkout" id="checkout" hidden>
+  <h2>Оформление</h2>
+  <span class="label">Когда заберёте</span>
+  <div class="chips" id="pickup"></div>
+  <label class="label" for="name">Как к вам обращаться</label>
+  <input id="name" autocomplete="given-name" placeholder="Имя">
+</section>
+
+<button class="fallback" id="fallback" hidden></button>
+
+<script>
+// ── 1. Настройки под клиента: меняете только этот блок ─────────────
+const MANAGER = 'your_username'; // ник менеджера кофейни в Telegram, без @
+
+const MENU = [
+  { id: 'espresso',   cat: 'Кофе',    name: 'Эспрессо',        desc: '40 мл, средняя обжарка',  price: 150 },
+  { id: 'cappuccino', cat: 'Кофе',    name: 'Капучино',        desc: '300 мл',                  price: 230 },
+  { id: 'flatwhite',  cat: 'Кофе',    name: 'Флэт уайт',       desc: '200 мл, двойной эспрессо', price: 250 },
+  { id: 'raf',        cat: 'Кофе',    name: 'Раф ванильный',   desc: '350 мл',                  price: 290 },
+  { id: 'tea',        cat: 'Не кофе', name: 'Облепиховый чай', desc: '400 мл, с мёдом',         price: 220 },
+  { id: 'cocoa',      cat: 'Не кофе', name: 'Какао',           desc: '300 мл',                  price: 210 },
+  { id: 'croissant',  cat: 'Выпечка', name: 'Круассан',        desc: 'Сливочный, 70 г',         price: 160 },
+  { id: 'syrniki',    cat: 'Выпечка', name: 'Сырники',         desc: '3 штуки, со сметаной',    price: 280 },
+];
+
+const PICKUP = ['Через 10 минут', 'Через 20 минут', 'Через 30 минут'];
+
+// ── 2. Находим элементы страницы ───────────────────────────────────
+const tabsEl      = document.getElementById('tabs');
+const listEl      = document.getElementById('list');
+const checkoutEl  = document.getElementById('checkout');
+const pickupEl    = document.getElementById('pickup');
+const nameInput   = document.getElementById('name');
+const fallbackBtn = document.getElementById('fallback');
+
+// ── 3. Состояние: всё, что пользователь успел выбрать ──────────────
+const cart = {};              // корзина в виде { id товара: количество }
+let activeCat = MENU[0].cat;  // открытый раздел меню
+let pickup = PICKUP[0];       // выбранное время
+
+// ── 4. Связь с Telegram ────────────────────────────────────────────
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+// В обычном браузере объект есть, но initData пустая — так отличаем Telegram от браузера
+const inTelegram = Boolean(tg && tg.initData);
+
+if (inTelegram) {
+  tg.ready();                         // «страница загрузилась, можно показывать»
+  tg.expand();                        // раскрыть на всю высоту
+  applyScheme();
+  tg.onEvent('themeChanged', applyScheme);
+  tg.MainButton.onClick(sendOrder);   // большая кнопка внизу экрана Telegram
+  const user = tg.initDataUnsafe.user;
+  if (user && user.first_name) nameInput.value = user.first_name; // подставляем имя
+} else {
+  fallbackBtn.addEventListener('click', sendOrder);
+}
+
+function applyScheme() {
+  document.documentElement.dataset.scheme = tg.colorScheme; // 'light' или 'dark'
+  updateButton();
+}
+
+// ── 5. Отрисовка ───────────────────────────────────────────────────
+function getTotal() {
+  return MENU.reduce((sum, item) => sum + item.price * (cart[item.id] || 0), 0);
+}
+
+function itemHTML(item) {
+  const qty = cart[item.id] || 0;
+  const control = qty === 0
+    ? `<button class="add" data-action="plus" data-id="${item.id}">Добавить</button>`
+    : `<div class="qty">
+         <button data-action="minus" data-id="${item.id}" aria-label="Убрать одну порцию">−</button>
+         <span>${qty}</span>
+         <button data-action="plus" data-id="${item.id}" aria-label="Добавить ещё одну">+</button>
+       </div>`;
+  return `<li class="item">
+            <div>
+              <div class="name">${item.name}</div>
+              <div class="desc">${item.desc}</div>
+              <div class="price">${item.price} ₽</div>
+            </div>
+            ${control}
+          </li>`;
+}
+
+function render() {
+  const cats = [...new Set(MENU.map(item => item.cat))]; // список разделов без повторов
+  tabsEl.innerHTML = cats
+    .map(c => `<button class="tab" data-cat="${c}" aria-pressed="${c === activeCat}">${c}</button>`)
+    .join('');
+  listEl.innerHTML = MENU.filter(item => item.cat === activeCat).map(itemHTML).join('');
+  checkoutEl.hidden = getTotal() === 0;
+  updateButton();
+}
+
+function renderPickup() {
+  pickupEl.innerHTML = PICKUP
+    .map(p => `<button class="chip" data-pickup="${p}" aria-pressed="${p === pickup}">${p}</button>`)
+    .join('');
+}
+
+function updateButton() {
+  const total = getTotal();
+  const text = `Заказать за ${total} ₽`;
+  if (inTelegram) {
+    if (total === 0) { tg.MainButton.hide(); return; }
+    const css = getComputedStyle(document.documentElement);
+    tg.MainButton.setParams({
+      text,
+      color: css.getPropertyValue('--brand').trim(),
+      text_color: css.getPropertyValue('--brand-text').trim(),
+      is_visible: true,
+    });
+  } else {
+    fallbackBtn.hidden = total === 0;
+    fallbackBtn.textContent = text;
+  }
+}
+
+// ── 6. Реакция на нажатия ──────────────────────────────────────────
+// Один обработчик на весь список: смотрим, на какую кнопку нажали
+tabsEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  activeCat = btn.dataset.cat;
+  render();
+});
+
+listEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const qty = cart[id] || 0;
+  if (btn.dataset.action === 'plus') cart[id] = qty + 1;
+  else if (qty <= 1) delete cart[id];
+  else cart[id] = qty - 1;
+  if (inTelegram) tg.HapticFeedback.impactOccurred('light'); // лёгкая вибрация
+  render();
+});
+
+pickupEl.addEventListener('click', (e) => {
+  const chip = e.target.closest('[data-pickup]');
+  if (!chip) return;
+  pickup = chip.dataset.pickup;
+  renderPickup();
+});
+
+// ── 7. Отправка заказа менеджеру ───────────────────────────────────
+// Собираем текст и открываем чат с менеджером, где этот текст уже подставлен.
+// Сервер не нужен: заказ уходит обычным сообщением от покупателя.
+function sendOrder() {
+  const lines = MENU
+    .filter(item => cart[item.id])
+    .map(item => `${item.name} × ${cart[item.id]} = ${item.price * cart[item.id]} ₽`);
+  const name = nameInput.value.trim() || 'не указано';
+  const text = [
+    'Новый заказ',
+    ...lines,
+    `Итого: ${getTotal()} ₽`,
+    `Заберу: ${pickup.toLowerCase()}`,
+    `Имя: ${name}`,
+  ].join('\n');
+  const link = `https://t.me/${MANAGER}?text=${encodeURIComponent(text)}`;
+  if (inTelegram) tg.openTelegramLink(link);
+  else window.open(link, '_blank');
+}
+
+// ── 8. Первый запуск ───────────────────────────────────────────────
+renderPickup();
+render();
+</script>
+</body>
+</html>

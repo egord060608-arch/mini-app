@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Бритва — запись</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:   var(--tg-theme-bg-color, #ffffff);
+    --text: var(--tg-theme-text-color, #1c2120);
+    --hint: var(--tg-theme-hint-color, #7f8a88);
+    --card: var(--tg-theme-secondary-bg-color, #eef2f1);
+    --brand: #1d5c57;
+    --brand-text: #ffffff;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-brand: "Oswald", "Arial Narrow", var(--font-ui);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:   var(--tg-theme-bg-color, #161a19);
+      --text: var(--tg-theme-text-color, #e9efed);
+      --hint: var(--tg-theme-hint-color, #8d9896);
+      --card: var(--tg-theme-secondary-bg-color, #222827);
+      --brand: #7cc7bd;
+      --brand-text: #10201e;
+    }
+  }
+  :root[data-scheme="light"] { --brand: #1d5c57; --brand-text: #ffffff; }
+  :root[data-scheme="dark"]  { --brand: #7cc7bd; --brand-text: #10201e; }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 16px/1.45 var(--font-ui);
+    padding: 0 16px calc(100px + env(safe-area-inset-bottom, 0px));
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .hero { padding: 26px 0 0; }
+  .brand {
+    font-family: var(--font-brand); font-weight: 600;
+    font-size: 44px; line-height: 1; letter-spacing: 0.01em; margin: 0;
+  }
+  .where { color: var(--hint); margin: 6px 0 0; font-size: 15px; }
+
+  h2 { font-size: 17px; font-weight: 600; margin: 26px 0 10px; }
+
+  .services { display: grid; gap: 8px; }
+  .service {
+    display: grid; grid-template-columns: 1fr auto; gap: 2px 12px;
+    text-align: left; width: 100%;
+    padding: 14px; border: 2px solid transparent; border-radius: 16px;
+    background: var(--card); color: var(--text);
+    font: 16px var(--font-ui); cursor: pointer;
+  }
+  .service[aria-pressed="true"] { border-color: var(--brand); }
+  .s-name { font-weight: 600; }
+  .s-price { font-variant-numeric: tabular-nums; grid-row: span 2; align-self: center; }
+  .s-meta { color: var(--hint); font-size: 14px; }
+
+  .days { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .day {
+    flex: none; width: 58px; padding: 8px 0;
+    display: flex; flex-direction: column; align-items: center;
+    border: 0; border-radius: 14px;
+    background: var(--card); color: var(--text);
+    font: 13px var(--font-ui); cursor: pointer;
+  }
+  .day b { font-size: 20px; font-weight: 600; }
+  .day[aria-pressed="true"] { background: var(--brand); color: var(--brand-text); }
+
+  .slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .slot {
+    padding: 11px 0; border: 1px solid var(--hint); border-radius: 12px;
+    background: transparent; color: var(--text);
+    font: 15px var(--font-ui); font-variant-numeric: tabular-nums; cursor: pointer;
+  }
+  .slot[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-text); }
+  .slot:disabled { opacity: 0.35; text-decoration: line-through; cursor: default; }
+  .empty { color: var(--hint); margin: 0; }
+
+  input {
+    width: 100%; padding: 12px; border: 0; border-radius: 12px;
+    background: var(--card); color: var(--text); font: 16px var(--font-ui);
+  }
+  .summary { margin: 18px 0 0; color: var(--hint); font-size: 15px; }
+
+  .fallback {
+    position: fixed; left: 16px; right: 16px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding: 15px; border: 0; border-radius: 14px;
+    background: var(--brand); color: var(--brand-text);
+    font: 600 16px var(--font-ui); cursor: pointer;
+  }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1 class="brand">Бритва</h1>
+  <p class="where">Барбершоп на Лесной, 9. Мастер Тимур.</p>
+</header>
+
+<h2>Услуга</h2>
+<div class="services" id="services"></div>
+
+<h2>День</h2>
+<div class="days" id="days"></div>
+
+<h2>Время</h2>
+<div class="slots" id="slots"></div>
+<p class="empty" id="noSlots" hidden>На этот день свободного времени нет. Выберите другой день.</p>
+
+<h2><label for="name">Ваше имя</label></h2>
+<input id="name" autocomplete="given-name" placeholder="Имя">
+
+<p class="summary" id="summary">Выберите услугу и время, чтобы записаться.</p>
+
+<button class="fallback" id="fallback" hidden></button>
+
+<script>
+// ── 1. Настройки под клиента ───────────────────────────────────────
+const MASTER = 'your_username'; // ник мастера или администратора, без @
+
+const SERVICES = [
+  { id: 'cut',   name: 'Мужская стрижка',      minutes: 60, price: 1500 },
+  { id: 'beard', name: 'Оформление бороды',    minutes: 30, price: 900 },
+  { id: 'combo', name: 'Стрижка и борода',     minutes: 90, price: 2200 },
+  { id: 'kid',   name: 'Детская стрижка до 12 лет', minutes: 45, price: 1100 },
+];
+
+const SLOTS = ['10:00', '11:00', '12:00', '13:30', '15:00', '16:00', '17:30', '19:00'];
+
+// В демо занятое время задано вручную: ключ — сколько дней от сегодня.
+// В реальном проекте его берут из Google Таблицы или CRM клиента (это уже работа с сервером).
+const BUSY = { 0: ['11:00', '15:00'], 1: ['10:00', '13:30', '17:30'], 3: ['12:00', '16:00'] };
+const DAYS_AHEAD = 7;
+
+// ── 2. Элементы и состояние ────────────────────────────────────────
+const servicesEl  = document.getElementById('services');
+const daysEl      = document.getElementById('days');
+const slotsEl     = document.getElementById('slots');
+const noSlotsEl   = document.getElementById('noSlots');
+const nameInput   = document.getElementById('name');
+const summaryEl   = document.getElementById('summary');
+const fallbackBtn = document.getElementById('fallback');
+
+const state = { service: null, day: 0, slot: null };
+
+// Готовые «форматтеры» дат на русском
+const fmtWeekday = new Intl.DateTimeFormat('ru-RU', { weekday: 'short' });
+const fmtFull    = new Intl.DateTimeFormat('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' });
+
+// ── 3. Telegram ────────────────────────────────────────────────────
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+const inTelegram = Boolean(tg && tg.initData);
+
+if (inTelegram) {
+  tg.ready();
+  tg.expand();
+  applyScheme();
+  tg.onEvent('themeChanged', applyScheme);
+  tg.MainButton.onClick(sendBooking);
+  const user = tg.initDataUnsafe.user;
+  if (user && user.first_name) nameInput.value = user.first_name;
+} else {
+  fallbackBtn.addEventListener('click', sendBooking);
+}
+
+function applyScheme() {
+  document.documentElement.dataset.scheme = tg.colorScheme;
+  updateButton();
+}
+
+// ── 4. Вспомогательные функции ─────────────────────────────────────
+function dayDate(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d;
+}
+
+function isUnavailable(offset, slot) {
+  if ((BUSY[offset] || []).includes(slot)) return true;
+  if (offset === 0) { // сегодня прошедшее время недоступно
+    const [h, m] = slot.split(':').map(Number);
+    const now = new Date();
+    return h * 60 + m <= now.getHours() * 60 + now.getMinutes();
+  }
+  return false;
+}
+
+function selectedService() {
+  return SERVICES.find(s => s.id === state.service);
+}
+
+// ── 5. Отрисовка ───────────────────────────────────────────────────
+function render() {
+  servicesEl.innerHTML = SERVICES.map(s => `
+    <button class="service" data-service="${s.id}" aria-pressed="${state.service === s.id}">
+      <span class="s-name">${s.name}</span>
+      <span class="s-price">${s.price.toLocaleString('ru-RU')} ₽</span>
+      <span class="s-meta">${s.minutes} мин</span>
+    </button>`).join('');
+
+  daysEl.innerHTML = Array.from({ length: DAYS_AHEAD }, (_, i) => {
+    const d = dayDate(i);
+    const top = i === 0 ? 'сегодня' : i === 1 ? 'завтра' : fmtWeekday.format(d);
+    return `<button class="day" data-day="${i}" aria-pressed="${state.day === i}">
+              <span>${top}</span><b>${d.getDate()}</b>
+            </button>`;
+  }).join('');
+
+  const free = SLOTS.filter(t => !isUnavailable(state.day, t));
+  noSlotsEl.hidden = free.length > 0;
+  slotsEl.hidden = free.length === 0;
+  slotsEl.innerHTML = SLOTS.map(t => `
+    <button class="slot" data-slot="${t}" aria-pressed="${state.slot === t}"
+      ${isUnavailable(state.day, t) ? 'disabled' : ''}>${t}</button>`).join('');
+
+  const s = selectedService();
+  summaryEl.textContent = s && state.slot
+    ? `${s.name}, ${fmtFull.format(dayDate(state.day))}, ${state.slot}.`
+    : 'Выберите услугу и время, чтобы записаться.';
+
+  updateButton();
+}
+
+function updateButton() {
+  const ready = Boolean(state.service && state.slot);
+  const text = ready ? `Записаться на ${state.slot}` : '';
+  if (inTelegram) {
+    if (!ready) { tg.MainButton.hide(); return; }
+    const css = getComputedStyle(document.documentElement);
+    tg.MainButton.setParams({
+      text,
+      color: css.getPropertyValue('--brand').trim(),
+      text_color: css.getPropertyValue('--brand-text').trim(),
+      is_visible: true,
+    });
+  } else {
+    fallbackBtn.hidden = !ready;
+    fallbackBtn.textContent = text;
+  }
+}
+
+// ── 6. Нажатия ─────────────────────────────────────────────────────
+servicesEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-service]');
+  if (!btn) return;
+  state.service = btn.dataset.service;
+  if (inTelegram) tg.HapticFeedback.selectionChanged();
+  render();
+});
+
+daysEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-day]');
+  if (!btn) return;
+  state.day = Number(btn.dataset.day);
+  state.slot = null; // время на другой день выбирают заново
+  render();
+});
+
+slotsEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-slot]');
+  if (!btn || btn.disabled) return;
+  state.slot = btn.dataset.slot;
+  if (inTelegram) tg.HapticFeedback.selectionChanged();
+  render();
+});
+
+// ── 7. Отправка заявки мастеру ─────────────────────────────────────
+function sendBooking() {
+  const s = selectedService();
+  if (!s || !state.slot) return;
+  const name = nameInput.value.trim() || 'не указано';
+  const text = [
+    'Запись через мини-приложение',
+    `Услуга: ${s.name} (${s.minutes} мин, ${s.price} ₽)`,
+    `Дата: ${fmtFull.format(dayDate(state.day))}`,
+    `Время: ${state.slot}`,
+    `Имя: ${name}`,
+  ].join('\n');
+  const link = `https://t.me/${MASTER}?text=${encodeURIComponent(text)}`;
+  if (inTelegram) tg.openTelegramLink(link);
+  else window.open(link, '_blank');
+}
+
+render();
+</script>
+</body>
+</html>
