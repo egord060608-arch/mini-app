@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Блик: детейлинг и автосервис. Бесплатный осмотр, цена до начала работ</title>
+<meta name="description" content="Полировка, керамика, защитная плёнка и обслуживание автомобиля. Бесплатный осмотр, письменная гарантия до 36 месяцев.">
+<meta name="theme-color" content="#ECEEF0">
+
+<!-- ВАШ НИК ЗДЕСЬ: замените your_username на ник в Telegram, без @ -->
+<script>const MANAGER = 'your_username';</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@500;700;800&family=Onest:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ── 1. Цвета, шрифты ──────────────────────────────────────────── */
+  :root {
+    --paper: #ECEEF0;   /* фон страницы: холодный бетон */
+    --white: #FFFFFF;
+    --ink: #15181C;     /* графит: текст и тёмные блоки */
+    --steel: #5A6570;   /* второстепенный текст */
+    --line: #D3D8DD;    /* тонкие линии */
+    --red: #A3152B;     /* фирменный цвет: кнопки, акценты */
+    --red-deep: #7C0E20;
+    --font: "Onest", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-display: "Geologica", "Onest", -apple-system, "Segoe UI", Arial, sans-serif;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.55 var(--font); -webkit-tap-highlight-color: transparent; }
+  h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+  ul, ol { padding: 0; list-style: none; }
+  svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  button, input, select { font: inherit; color: inherit; }
+  legend { padding: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .section { padding: 60px 0; scroll-margin-top: 8px; }
+  .section--white { background: var(--white); }
+  h2 { font-family: var(--font-display); font-size: clamp(27px, 6.4vw, 40px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 800; }
+  h3 { font-weight: 700; }
+  .lead { color: var(--steel); margin-top: 12px; max-width: 58ch; }
+
+  /* ── 2. Кнопки ─────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 52px; padding: 0 26px; border: 0; border-radius: 12px;
+    background: var(--red); color: var(--white);
+    font-weight: 700; font-size: 17px; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn:hover { background: var(--red-deep); }
+  .btn--ink { background: var(--ink); }
+  .btn--ink:hover { background: #2B3138; }
+  .btn--line { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 2px var(--ink); }
+  .btn--line:hover { background: var(--ink); color: var(--white); }
+  .btn--block { width: 100%; }
+
+  /* ── 3. Шапка ──────────────────────────────────────────────────── */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; text-decoration: none; }
+  .logo-mark { position: relative; width: 28px; height: 28px; border-radius: 7px; background: var(--ink); overflow: hidden; }
+  .logo-mark::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: 11px; width: 7px; background: var(--white); transform: skewX(-24deg); }
+  .nav { display: none; }
+  .top .btn { min-height: 44px; padding: 0 18px; font-size: 15px; }
+
+  /* ── 4. Блок 1. Первый экран ───────────────────────────────────── */
+  .hero { padding: 12px 0 56px; }
+  .hero-grid { display: grid; gap: 36px; }
+  h1 { font-family: var(--font-display); font-size: clamp(34px, 9vw, 60px); line-height: 1.03; letter-spacing: -0.035em; font-weight: 800; }
+  .hero .lead { font-size: 19px; margin-top: 16px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+  .facts { margin-top: 28px; display: grid; gap: 10px; }
+  .facts li { display: flex; gap: 10px; align-items: flex-start; }
+  .facts svg { flex: none; width: 22px; height: 22px; margin-top: 2px; stroke: var(--red); }
+
+  /* Сравнение «до и после»: панель кузова нарисована средствами CSS */
+  .paint { --pos: 50%; position: relative; aspect-ratio: 5 / 4; border-radius: 22px; overflow: hidden; isolation: isolate; background: #16263F; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+  .paint-layer { position: absolute; inset: 0; }
+  .paint-before {
+    background:
+      radial-gradient(120% 80% at 30% 18%, rgba(220, 226, 238, 0.24), transparent 62%),
+      repeating-conic-gradient(from 10deg at 24% 34%, rgba(255, 255, 255, 0.05) 0 0.35deg, transparent 0.35deg 3.1deg),
+      repeating-conic-gradient(from 70deg at 76% 70%, rgba(255, 255, 255, 0.045) 0 0.3deg, transparent 0.3deg 3.7deg),
+      repeating-conic-gradient(from 130deg at 50% 100%, rgba(255, 255, 255, 0.035) 0 0.3deg, transparent 0.3deg 4.3deg),
+      linear-gradient(180deg, #2A3C5C 0%, #1C2B47 55%, #172238 100%);
+  }
+  .paint-after {
+    clip-path: inset(0 0 0 var(--pos));
+    background:
+      linear-gradient(105deg, transparent 0 13%, rgba(255, 255, 255, 0.82) 16.5%, rgba(255, 255, 255, 0.14) 22%, transparent 25% 54%, rgba(255, 255, 255, 0.4) 57%, transparent 63%),
+      linear-gradient(180deg, rgba(150, 190, 245, 0.6) 0%, rgba(80, 120, 190, 0.2) 38%, transparent 52%),
+      linear-gradient(180deg, transparent 52%, #08101E 53.4%, #0F1A2F 63%, #09111F 100%),
+      linear-gradient(180deg, #244070, #0D182C);
+  }
+  /* линия изгиба кузова поверх обоих слоёв */
+  .paint::after {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, transparent 57%, rgba(255, 255, 255, 0.2) 57.6%, transparent 58.6%, rgba(0, 0, 0, 0.28) 59.4%, transparent 66%);
+  }
+  .paint-tag { position: absolute; top: 14px; z-index: 2; padding: 5px 12px; border-radius: 99px; background: rgba(255, 255, 255, 0.92); color: var(--ink); font-size: 14px; font-weight: 700; }
+  .paint-tag--l { left: 14px; }
+  .paint-tag--r { right: 14px; }
+  .paint-divider { position: absolute; z-index: 2; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: var(--white); pointer-events: none; }
+  .paint-handle {
+    position: absolute; z-index: 2; top: 50%; left: var(--pos); width: 46px; height: 46px; margin: -23px 0 0 -23px;
+    border-radius: 50%; background: var(--white); display: grid; place-items: center; pointer-events: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+  .paint-handle svg { width: 24px; height: 24px; stroke: var(--ink); }
+  .paint input[type=range] { position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; -webkit-appearance: none; appearance: none; background: transparent; touch-action: pan-y; }
+  .paint input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 1px; height: 100%; }
+  .paint input[type=range]::-moz-range-thumb { width: 1px; height: 100%; border: 0; }
+  .paint input[type=range]:focus-visible ~ .paint-handle { outline: 3px solid var(--white); outline-offset: 3px; }
+  .paint-cap { margin-top: 10px; font-size: 14px; color: var(--steel); }
+
+  /* ── 5. Блок 2. Услуги ─────────────────────────────────────────── */
+  .price-cols { display: grid; gap: 36px; margin-top: 32px; }
+  .price-cols h3 { font-family: var(--font-display); font-size: 22px; padding-bottom: 12px; border-bottom: 3px solid var(--ink); }
+  .price-list li { display: flex; justify-content: space-between; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .pl-name { font-weight: 600; }
+  .pl-desc { display: block; color: var(--steel); font-size: 15px; line-height: 1.4; margin-top: 2px; font-weight: 400; }
+  .pl-price { white-space: nowrap; font-weight: 700; }
+
+  /* ── 6. Блок 3. Пакеты ─────────────────────────────────────────── */
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 28px; padding: 5px; background: var(--white); border-radius: 14px; max-width: 520px; }
+  .seg label { position: relative; display: block; cursor: pointer; }
+  .seg input { position: absolute; opacity: 0; inset: 0; }
+  .seg span { display: block; padding: 10px 6px; text-align: center; border-radius: 10px; line-height: 1.25; font-weight: 700; }
+  .seg small { display: block; font-weight: 400; font-size: 13px; opacity: 0.75; }
+  .seg input:checked + span { background: var(--ink); color: var(--white); }
+  .seg input:focus-visible + span { outline: 3px solid var(--red); outline-offset: 2px; }
+
+  .packs { display: grid; gap: 16px; margin-top: 24px; }
+  .pack { background: var(--white); border-radius: 22px; padding: 26px 22px; display: flex; flex-direction: column; }
+  .pack--top { background: var(--ink); color: var(--white); }
+  .pack-badge { align-self: flex-start; margin-bottom: 10px; padding: 3px 10px; border-radius: 99px; background: var(--red); color: var(--white); font-size: 13px; font-weight: 700; }
+  .pack h3 { font-family: var(--font-display); font-size: 22px; }
+  .pack-price { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.03em; margin-top: 8px; line-height: 1.1; }
+  .pack-meta { color: var(--steel); font-size: 15px; margin-top: 2px; }
+  .pack--top .pack-meta { color: #AEB7C1; }
+  .pack ul { margin: 20px 0 24px; display: grid; gap: 10px; flex: 1; }
+  .pack li { display: flex; gap: 10px; align-items: flex-start; }
+  .pack li svg { flex: none; width: 20px; height: 20px; margin-top: 3px; stroke: var(--red); }
+  .pack--top li svg { stroke: #FF8A99; }
+  .pack--top .btn { background: var(--white); color: var(--ink); }
+  .pack--top .btn:hover { background: #E3E6EA; }
+  .note { margin-top: 18px; font-size: 14px; color: var(--steel); }
+
+  /* ── 7. Блок 4. Как проходит ───────────────────────────────────── */
+  .steps { display: grid; gap: 24px; margin-top: 32px; counter-reset: s; }
+  .steps li { position: relative; padding-left: 60px; counter-increment: s; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: -2px; width: 44px; height: 44px; border-radius: 50%; background: var(--ink); color: var(--white); display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 19px; }
+  .steps h3 { font-size: 19px; }
+  .steps p { color: var(--steel); margin-top: 4px; }
+
+  /* ── 8. Блок 5. Примеры работ ──────────────────────────────────── */
+  .cases { margin-top: 28px; border-top: 3px solid var(--ink); }
+  .case { display: grid; grid-template-columns: 34px 1fr auto; gap: 4px 14px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .swatch { width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18), inset -5px -6px 10px rgba(0, 0, 0, 0.28), inset 5px 5px 8px rgba(255, 255, 255, 0.35); grid-row: span 2; }
+  .case-car { font-weight: 700; }
+  .case-what { color: var(--steel); font-size: 15px; grid-column: 2; }
+  .case-price { grid-column: 3; grid-row: 1 / span 2; font-weight: 800; font-family: var(--font-display); font-size: 19px; white-space: nowrap; }
+
+  /* ── 9. Блок 6. Почему мы ──────────────────────────────────────── */
+  .why-grid { display: grid; gap: 28px; }
+  .why-list { border-top: 1px solid var(--line); }
+  .why-list div { padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .why-list dt { font-weight: 700; font-size: 19px; }
+  .why-list dd { color: var(--steel); margin-top: 4px; }
+
+  /* ── 10. Блок 7. Гарантии ──────────────────────────────────────── */
+  .dark { background: var(--ink); color: var(--white); }
+  .dark .lead { color: #AEB7C1; }
+  .guar { display: grid; gap: 0; margin-top: 28px; }
+  .guar li { padding: 22px 0; border-top: 1px solid #343A42; }
+  .guar b { display: block; font-family: var(--font-display); font-size: 26px; letter-spacing: -0.02em; }
+  .guar p { color: #AEB7C1; margin-top: 6px; }
+
+  /* ── 11. Блок 8. Отзывы ────────────────────────────────────────── */
+  .quotes { display: grid; gap: 22px; margin-top: 28px; }
+  .quote { border-left: 4px solid var(--red); padding: 2px 0 2px 18px; }
+  .quote p { font-size: 18px; }
+  .quote footer { margin-top: 8px; color: var(--steel); font-size: 15px; }
+  .demo-note { margin-top: 22px; font-size: 14px; color: var(--steel); }
+
+  /* ── 12. Блок 9. Вопросы ───────────────────────────────────────── */
+  .faq { margin-top: 24px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { list-style: none; cursor: pointer; position: relative; padding: 18px 40px 18px 0; font-weight: 600; font-size: 18px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: ""; position: absolute; right: 4px; top: 50%; width: 12px; height: 12px; border-right: 3px solid var(--red); border-bottom: 3px solid var(--red); transform: translateY(-70%) rotate(45deg); transition: transform 0.2s; }
+  .faq details[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+  .faq details p { padding: 0 0 18px; color: var(--steel); max-width: 62ch; }
+
+  /* ── 13. Блок 10. Запись ───────────────────────────────────────── */
+  .order { background: var(--red); color: var(--white); }
+  .order .lead { color: #F6D5DA; }
+  .order-grid { display: grid; gap: 30px; }
+  .contacts { margin-top: 24px; display: grid; gap: 12px; }
+  .contacts dt { font-size: 14px; color: #F6D5DA; }
+  .contacts dd { font-weight: 600; }
+  .form { background: var(--white); color: var(--ink); border-radius: 22px; padding: 24px 20px; display: grid; gap: 18px; }
+  .lbl { display: block; font-weight: 600; margin-bottom: 8px; }
+  .form input[type=text], .form input[type=tel], .form select {
+    width: 100%; min-height: 52px; padding: 0 14px; border: 2px solid var(--line); border-radius: 12px; background: var(--paper); font-size: 17px;
+  }
+  .form select { -webkit-appearance: none; appearance: none; padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2315181C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 18px; }
+  .form input::placeholder { color: #8A949F; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; inset: 0; }
+  .chip span { display: block; padding: 10px 16px; border: 2px solid var(--line); border-radius: 99px; cursor: pointer; }
+  .chip input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--white); font-weight: 700; }
+  .chip input:focus-visible + span { outline: 3px solid var(--red); outline-offset: 2px; }
+  .order-sum { padding: 12px 14px; border-radius: 12px; background: var(--paper); font-size: 15px; }
+  .form-error { min-height: 22px; color: var(--red); font-size: 15px; font-weight: 600; }
+  .form-hint { color: var(--steel); font-size: 14px; }
+  .form-hint a { color: var(--red); }
+
+  /* ── 14. Подвал и нижняя панель ────────────────────────────────── */
+  .foot { background: #0C0E11; color: #8F99A4; padding: 26px 0 calc(100px + env(safe-area-inset-bottom, 0px)); font-size: 14px; }
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--white); border-top: 1px solid var(--line);
+    transform: translateY(100%); visibility: hidden; transition: transform 0.25s, visibility 0.25s;
+  }
+  .bar.on { transform: none; visibility: visible; }
+  .bar b { display: block; font-family: var(--font-display); font-size: 17px; line-height: 1.2; }
+  .bar span { font-size: 13px; color: var(--steel); }
+  .bar .btn { min-height: 48px; padding: 0 22px; }
+
+  /* ── 15. Планшет и компьютер ───────────────────────────────────── */
+  @media (min-width: 900px) {
+    .section { padding: 96px 0; }
+    .top { max-width: 1080px; margin: 0 auto; padding: 22px 20px; }
+    .nav { display: flex; gap: 30px; }
+    .nav a { text-decoration: none; font-weight: 500; }
+    .nav a:hover { color: var(--red); }
+    .hero { padding: 36px 0 96px; }
+    .hero-grid { grid-template-columns: 0.95fr 1.05fr; align-items: center; gap: 60px; }
+    .price-cols { grid-template-columns: 1fr 1fr; gap: 56px; }
+    .packs { grid-template-columns: repeat(3, 1fr); align-items: stretch; }
+    .pack { padding: 30px 26px; }
+    .steps { grid-template-columns: repeat(5, 1fr); gap: 24px; }
+    .steps li { padding: 58px 0 0; }
+    .case { grid-template-columns: 40px 1.3fr 1.2fr auto; }
+    .swatch { grid-row: auto; width: 40px; height: 40px; }
+    .case-what { grid-column: auto; }
+    .case-price { grid-column: auto; grid-row: auto; }
+    .why-grid { grid-template-columns: 0.8fr 1.2fr; gap: 72px; }
+    .guar { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .guar li { border-top: 3px solid var(--red); }
+    .quotes { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .order-grid { grid-template-columns: 0.85fr 1.15fr; gap: 64px; align-items: start; }
+    .form { padding: 32px 30px; }
+    .foot { padding-bottom: 30px; }
+    .bar { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<header class="top">
+  <a class="logo" href="#top" aria-label="Блик, на главную"><span class="logo-mark"></span>Блик</a>
+  <nav class="nav" aria-label="Разделы">
+    <a href="#services">Услуги</a>
+    <a href="#packages">Пакеты</a>
+    <a href="#cases">Работы</a>
+    <a href="#faq">Вопросы</a>
+  </nav>
+  <a class="btn" href="#order">Записаться</a>
+</header>
+
+<main id="top">
+
+  <!-- Блок 1. Первый экран -->
+  <section class="hero" id="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Возвращаем лаку глянец и защищаем его на годы</h1>
+        <p class="lead">Детейлинг и автосервис «Блик». Осмотр бесплатный, цену называем до начала работ.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#order">Записаться на осмотр</a>
+          <a class="btn btn--line" href="#packages">Выбрать пакет</a>
+        </div>
+        <ul class="facts">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Осмотр бесплатно, 20 минут</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Цена фиксируется до начала работ</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Письменная гарантия до 36 месяцев</li>
+        </ul>
+      </div>
+
+      <figure>
+        <div class="paint" id="paint">
+          <div class="paint-layer paint-before"></div>
+          <div class="paint-layer paint-after"></div>
+          <span class="paint-tag paint-tag--l">До</span>
+          <span class="paint-tag paint-tag--r">После</span>
+          <div class="paint-divider"></div>
+          <input type="range" id="paintRange" min="0" max="100" step="1" value="92" aria-label="Сравнение лака до и после полировки">
+          <div class="paint-handle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg></div>
+        </div>
+        <figcaption class="paint-cap">Потяните ползунок: слева лак с паутинкой, справа после полировки (иллюстрация).</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Блок 2. Услуги -->
+  <section class="section section--white" id="services">
+    <div class="wrap">
+      <h2>Услуги и цены</h2>
+      <p class="lead">Цены указаны «от» для среднего класса автомобилей. Точную сумму называем после осмотра.</p>
+      <div class="price-cols">
+        <div><h3>Детейлинг</h3><ul class="price-list" id="listDetailing"></ul></div>
+        <div><h3>Автосервис</h3><ul class="price-list" id="listService"></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 3. Пакеты -->
+  <section class="section" id="packages">
+    <div class="wrap">
+      <h2>Пакеты по уходу за кузовом</h2>
+      <p class="lead">Выберите класс автомобиля, цены пересчитаются сразу.</p>
+
+      <fieldset class="seg" id="seg" style="border:0;margin-bottom:0">
+        <legend class="sr">Класс автомобиля</legend>
+      </fieldset>
+
+      <div class="packs" id="packs"></div>
+      <p class="note">Цены ориентировочные и демонстрационные. После осмотра мастер подтверждает сумму и срок.</p>
+    </div>
+  </section>
+
+  <!-- Блок 4. Как проходит работа -->
+  <section class="section section--white" id="process">
+    <div class="wrap">
+      <h2>Как проходит работа</h2>
+      <ol class="steps">
+        <li><h3>Запись и осмотр</h3><p>Приезжаете, мастер осматривает кузов под студийным светом. Это бесплатно.</p></li>
+        <li><h3>Смета</h3><p>Называем сумму и срок письменно. Без доплат по ходу работ.</p></li>
+        <li><h3>Работы</h3><p>Один мастер ведёт автомобиль от начала до конца и присылает фото этапов.</p></li>
+        <li><h3>Контроль</h3><p>Проверяем результат вместе с вами при ярком свете.</p></li>
+        <li><h3>Выдача</h3><p>Вручаем гарантийный талон и памятку по уходу за покрытием.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Блок 5. Примеры работ -->
+  <section class="section" id="cases">
+    <div class="wrap">
+      <h2>Примеры работ</h2>
+      <p class="lead">Какие пакеты выбирают для разных автомобилей и сколько это стоит.</p>
+      <div class="cases" id="casesList"></div>
+      <p class="demo-note">Примеры демонстрационные: автомобили и суммы условные.</p>
+    </div>
+  </section>
+
+  <!-- Блок 6. Почему мы -->
+  <section class="section section--white" id="why">
+    <div class="wrap why-grid">
+      <div>
+        <h2>Почему к нам возвращаются</h2>
+        <p class="lead">Мы не торопимся и не прячем работу: всё видно, всё записано.</p>
+      </div>
+      <dl class="why-list">
+        <div><dt>Студийный свет</dt><dd>Дефекты лака видны сразу, а не через месяц на солнце.</dd></div>
+        <div><dt>Материалы с паспортом</dt><dd>Керамику и полироли берём только с техническими данными. Карточки материалов покажем по запросу.</dd></div>
+        <div><dt>Один мастер на машину</dt><dd>Тот, кто осматривал, тот и делает. Вопросы задаёте ему напрямую.</dd></div>
+        <div><dt>Фотоотчёт по этапам</dt><dd>Присылаем фото в мессенджер, вам не нужно ждать вечера, чтобы узнать, как идут дела.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- Блок 7. Гарантии -->
+  <section class="section dark" id="warranty">
+    <div class="wrap">
+      <h2>Гарантия, которую можно прочитать</h2>
+      <p class="lead">Условия записываем в талон, а не обещаем на словах.</p>
+      <ul class="guar">
+        <li><b>До 36 месяцев</b><p>Гарантия на керамическое покрытие при соблюдении правил ухода.</p></li>
+        <li><b>Проверка через 30 дней</b><p>Бесплатно осматриваем покрытие и показываем, как оно держится.</p></li>
+        <li><b>Цена до начала</b><p>Если во время работ нашли что-то ещё, согласуем отдельно, без неожиданностей на выдаче.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Блок 8. Отзывы -->
+  <section class="section" id="reviews">
+    <div class="wrap">
+      <h2>Что говорят клиенты</h2>
+      <div class="quotes">
+        <blockquote class="quote"><p>Привёз машину с паутинкой после зимы. Показали замеры, объяснили, что убирается, а что нет. На выдаче цена совпала со сметой.</p><footer>Дмитрий, Camry</footer></blockquote>
+        <blockquote class="quote"><p>Понравился фотоотчёт: не надо звонить и спрашивать, как дела. Через месяц приезжал на проверку, всё держится.</p><footer>Алёна, Sportage</footer></blockquote>
+        <blockquote class="quote"><p>Сделали ТО и полировку за один визит. Не пришлось возить машину в два места.</p><footer>Сергей, Rio</footer></blockquote>
+      </div>
+      <p class="demo-note">Пример блока отзывов: тексты и имена демонстрационные.</p>
+    </div>
+  </section>
+
+  <!-- Блок 9. Вопросы -->
+  <section class="section section--white" id="faq">
+    <div class="wrap">
+      <h2>Частые вопросы</h2>
+      <div class="faq">
+        <details><summary>Сколько служит керамика?</summary><p>От 12 до 36 месяцев в зависимости от пакета, если мыть автомобиль без жёстких щёток и абразивов.</p></details>
+        <details><summary>Уберёт ли полировка глубокие царапины?</summary><p>Если царапина не дошла до грунта, чаще всего да. Окончательно скажем после осмотра и замера толщины лака.</p></details>
+        <details><summary>Как ухаживать после керамики?</summary><p>Первые 7 дней не мыть. Дальше мойте бесконтактно или двухфазно, без жёстких щёток. Подробную памятку выдаём вместе с талоном.</p></details>
+        <details><summary>Можно ли сделать ТО и детейлинг за один визит?</summary><p>Да. Пока автомобиль на подъёмнике, делаем обслуживание, потом передаём в детейлинг.</p></details>
+        <details><summary>Где стоит автомобиль на ночь?</summary><p>В закрытом боксе с видеонаблюдением. Ключи остаются у администратора.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 10. Запись -->
+  <section class="section order" id="order">
+    <div class="wrap order-grid">
+      <div>
+        <h2>Запишитесь на бесплатный осмотр</h2>
+        <p class="lead">Заявка откроется в Telegram готовым сообщением, останется нажать «Отправить». Перезвоним или напишем и согласуем время.</p>
+        <dl class="contacts">
+          <div><dt>Адрес</dt><dd>Москва, промзона «Северная», бокс 7</dd></div>
+          <div><dt>Часы работы</dt><dd>Ежедневно 9:00–21:00</dd></div>
+        </dl>
+      </div>
+
+      <form class="form" id="form" novalidate>
+        <div><label class="lbl" for="fName">Как к вам обращаться</label><input type="text" id="fName" autocomplete="given-name" placeholder="Имя"></div>
+        <div><label class="lbl" for="fPhone">Телефон</label><input type="tel" id="fPhone" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
+        <div><label class="lbl" for="fCar">Автомобиль</label><input type="text" id="fCar" placeholder="Например, Kia Rio 2019"></div>
+        <div><label class="lbl" for="fService">Что нужно</label><select id="fService"></select></div>
+        <p class="order-sum num" id="orderSum" hidden></p>
+        <fieldset style="border:0;padding:0;margin:0;min-width:0">
+          <legend class="lbl">Удобное время</legend>
+          <div class="chips" id="slots"></div>
+        </fieldset>
+        <p class="form-error" id="formError" role="alert"></p>
+        <button class="btn btn--ink btn--block" type="submit">Отправить заявку в Telegram</button>
+        <p class="form-hint" id="formStatus"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">Блик — учебный проект. Компания, цены, примеры и отзывы вымышлены, страница сделана как пример работы.</div>
+</footer>
+
+<div class="bar" id="bar">
+  <div><b>Бесплатный осмотр</b><span>20 минут, цена до работ</span></div>
+  <a class="btn" href="#order">Записаться</a>
+</div>
+
+<script>
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 1. ДАННЫЕ (меняете под клиента только этот блок)
+//  Ник менеджера лежит в самом верху файла, в <head>.
+// ═════════════════════════════════════════════════════════════════
+const SERVICES_DETAILING = [
+  { name: 'Полировка кузова',               desc: 'Убираем паутинку и мелкие царапины',          price: 'от 8 000 ₽' },
+  { name: 'Керамическое покрытие',          desc: 'Защита лака от реагентов и мойки',            price: 'от 24 000 ₽' },
+  { name: 'Защитная плёнка на зоны риска',  desc: 'Капот, бампер, зеркала, пороги',              price: 'от 30 000 ₽' },
+  { name: 'Химчистка салона',               desc: 'Сиденья, потолок, ковры, пластик',            price: 'от 7 000 ₽' },
+  { name: 'Двухфазная мойка',               desc: 'Бережная мойка без микроцарапин',             price: 'от 2 500 ₽' },
+];
+const SERVICES_REPAIR = [
+  { name: 'Замена масла и фильтров',        desc: 'Работа включена',                             price: 'от 3 500 ₽' },
+  { name: 'Компьютерная диагностика',       desc: 'Считываем ошибки и объясняем причины',        price: 'от 1 200 ₽' },
+  { name: 'Диагностика подвески',           desc: 'Осмотр на подъёмнике, отчёт с фото',          price: 'от 1 500 ₽' },
+  { name: 'Замена тормозных колодок',       desc: 'За одну ось, без стоимости деталей',          price: 'от 2 800 ₽' },
+  { name: 'Шиномонтаж',                     desc: 'Четыре колеса с балансировкой',               price: 'от 2 400 ₽' },
+];
+
+// Класс автомобиля: mult — во сколько раз цена пакета выше базовой
+const CLASSES = [
+  { id: 0, name: 'Малый',   hint: 'хэтчбек',   label: 'малый класс',   mult: 1 },
+  { id: 1, name: 'Средний', hint: 'седан',     label: 'средний класс', mult: 1.2 },
+  { id: 2, name: 'Крупный', hint: 'кроссовер', label: 'крупный класс', mult: 1.45 },
+];
+
+const PACKS = [
+  { id: 'fresh',  name: 'Свежий лак', base: 9000,  days: '1 день',
+    items: ['Двухфазная мойка', 'Очистка лака глиной', 'Одноэтапная полировка', 'Защитный воск на 2 месяца'] },
+  { id: 'shield', name: 'Защита',     base: 24000, days: '2 дня', top: true,
+    items: ['Всё из «Свежего лака»', 'Двухэтапная полировка', 'Керамика кузова на 12 месяцев', 'Обработка стёкол и дисков'] },
+  { id: 'max',    name: 'Максимум',   base: 58000, days: '4 дня',
+    items: ['Всё из «Защиты»', 'Плёнка на капот, бампер и зеркала', 'Керамика на 36 месяцев', 'Химчистка салона'] },
+];
+
+// Примеры работ: цена считается из пакета и класса, вручную писать не нужно
+const CASES = [
+  { car: 'Kia Rio, белый',               color: '#F1F1EE', pack: 'fresh',  cls: 0 },
+  { car: 'Toyota Camry, графит',         color: '#3B4047', pack: 'shield', cls: 1 },
+  { car: 'Kia Sportage, серый металлик', color: '#8C929A', pack: 'shield', cls: 2 },
+  { car: 'BMW X5, чёрный',               color: '#101114', pack: 'max',    cls: 2 },
+];
+
+const SLOTS = ['Любое', 'Утро', 'День', 'Вечер'];
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 2. СОСТОЯНИЕ И РАСЧЁТ
+// ═════════════════════════════════════════════════════════════════
+const state = { cls: 1, pack: null };
+
+const money = (n) => n.toLocaleString('ru-RU') + ' ₽';
+// цена пакета для класса, округляем до 500 ₽
+const packPrice = (pack, clsId) => Math.round((pack.base * CLASSES[clsId].mult) / 500) * 500;
+const $ = (id) => document.getElementById(id);
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>';
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 3. РИСУЕМ БЛОКИ ИЗ ДАННЫХ
+// ═════════════════════════════════════════════════════════════════
+const rows = (list) => list.map((s) => `
+  <li><span class="pl-name">${s.name}<span class="pl-desc">${s.desc}</span></span><span class="pl-price num">${s.price}</span></li>`).join('');
+$('listDetailing').innerHTML = rows(SERVICES_DETAILING);
+$('listService').innerHTML = rows(SERVICES_REPAIR);
+
+$('seg').insertAdjacentHTML('beforeend', CLASSES.map((c) => `
+  <label><input type="radio" name="cls" value="${c.id}" ${c.id === state.cls ? 'checked' : ''}><span>${c.name}<small>${c.hint}</small></span></label>`).join(''));
+
+function renderPacks() {
+  $('packs').innerHTML = PACKS.map((p) => `
+    <article class="pack ${p.top ? 'pack--top' : ''}">
+      ${p.top ? '<span class="pack-badge">Рекомендуем</span>' : ''}
+      <h3>${p.name}</h3>
+      <p class="pack-price num">${money(packPrice(p, state.cls))}</p>
+      <p class="pack-meta">${CLASSES[state.cls].label}, ${p.days}</p>
+      <ul>${p.items.map((i) => `<li>${CHECK}<span>${i}</span></li>`).join('')}</ul>
+      <button class="btn ${p.top ? '' : 'btn--ink'} btn--block" type="button" data-pack="${p.id}">Выбрать пакет</button>
+    </article>`).join('');
+}
+
+$('casesList').innerHTML = CASES.map((c) => {
+  const pack = PACKS.find((p) => p.id === c.pack);
+  return `
+    <div class="case">
+      <span class="swatch" style="background:${c.color}"></span>
+      <span class="case-car">${c.car}</span>
+      <span class="case-what">${pack.name}, ${CLASSES[c.cls].label}, ${pack.days}</span>
+      <span class="case-price num">${money(packPrice(pack, c.cls))}</span>
+    </div>`;
+}).join('');
+
+// выпадающий список в форме
+const OPTIONS = [
+  { value: 'inspect', text: 'Бесплатный осмотр' },
+  ...PACKS.map((p) => ({ value: p.id, text: `Пакет «${p.name}»` })),
+  { value: 'repair', text: 'Автосервис: ТО, диагностика' },
+  { value: 'other', text: 'Другое' },
+];
+$('fService').innerHTML = OPTIONS.map((o) => `<option value="${o.value}">${o.text}</option>`).join('');
+
+$('slots').innerHTML = SLOTS.map((s, i) => `
+  <label class="chip"><input type="radio" name="slot" value="${s}" ${i === 0 ? 'checked' : ''}><span>${s}</span></label>`).join('');
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 4. РЕАКЦИЯ НА ДЕЙСТВИЯ
+// ═════════════════════════════════════════════════════════════════
+function updateOrderSum() {
+  const pack = PACKS.find((p) => p.id === $('fService').value);
+  const el = $('orderSum');
+  if (!pack) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `Пакет «${pack.name}», ${CLASSES[state.cls].label}: <b>${money(packPrice(pack, state.cls))}</b> (предварительно)`;
+}
+
+$('seg').addEventListener('change', (e) => {
+  state.cls = Number(e.target.value);
+  renderPacks();
+  updateOrderSum();
+});
+
+$('packs').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-pack]');
+  if (!btn) return;
+  $('fService').value = btn.dataset.pack;
+  updateOrderSum();
+  $('order').scrollIntoView({ behavior: 'smooth' });
+});
+
+$('fService').addEventListener('change', updateOrderSum);
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 5. СРАВНЕНИЕ «ДО И ПОСЛЕ»
+// ═════════════════════════════════════════════════════════════════
+const paint = $('paint'), range = $('paintRange');
+function setPos(v) {
+  paint.style.setProperty('--pos', v + '%'); // CSS по этой переменной двигает границу
+  range.value = v;
+}
+range.addEventListener('input', () => setPos(range.value));
+
+// Один раз при загрузке «проводим» границу к центру, чтобы показать, что блок живой
+let touched = false;
+['pointerdown', 'keydown', 'input'].forEach((ev) => paint.addEventListener(ev, () => { touched = true; }, { once: true }));
+setPos(92);
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const from = 92, to = 50, dur = 1100;
+  let start = null;
+  const step = (t) => {
+    if (touched) return;
+    if (start === null) start = t;
+    const k = Math.min(1, (t - start) / dur);
+    setPos(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))));
+    if (k < 1) requestAnimationFrame(step);
+  };
+  setTimeout(() => requestAnimationFrame(step), 500);
+} else {
+  setPos(50);
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 6. НИЖНЯЯ ПАНЕЛЬ НА ТЕЛЕФОНЕ
+// ═════════════════════════════════════════════════════════════════
+const bar = $('bar');
+let heroPassed = false, orderVisible = false;
+const toggleBar = () => bar.classList.toggle('on', heroPassed && !orderVisible);
+new IntersectionObserver(([en]) => { heroPassed = !en.isIntersecting && en.boundingClientRect.top < 0; toggleBar(); }, { threshold: 0.05 }).observe($('hero'));
+new IntersectionObserver(([en]) => { orderVisible = en.isIntersecting; toggleBar(); }, { threshold: 0.05 }).observe($('order'));
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 7. ОТПРАВКА ЗАЯВКИ В TELEGRAM
+// ═════════════════════════════════════════════════════════════════
+$('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = $('fName').value.trim();
+  const phone = $('fPhone').value.trim();
+  const car = $('fCar').value.trim();
+  const err = $('formError');
+  err.textContent = '';
+
+  if (!name) { err.textContent = 'Укажите, как к вам обращаться.'; $('fName').focus(); return; }
+  if (phone.replace(/\D/g, '').length < 10) { err.textContent = 'Проверьте телефон: нужно минимум 10 цифр.'; $('fPhone').focus(); return; }
+
+  const select = $('fService');
+  const pack = PACKS.find((p) => p.id === select.value);
+  const slot = document.querySelector('input[name="slot"]:checked').value;
+  const lines = [
+    'Заявка в «Блик» (демо-страница)',
+    `Автомобиль: ${car || 'не указан'}`,
+    `Нужно: ${select.options[select.selectedIndex].text}`,
+  ];
+  if (pack) lines.push(`Класс авто: ${CLASSES[state.cls].label}`, `Предварительная цена: ${money(packPrice(pack, state.cls))}`);
+  lines.push(`Время: ${slot}`, `Имя: ${name}`, `Телефон: ${phone}`);
+
+  const link = `https://t.me/${MANAGER}?text=${encodeURIComponent(lines.join('\n'))}`;
+  const opened = window.open(link, '_blank', 'noopener');
+  $('formStatus').innerHTML = `Если Telegram не открылся, <a href="${link}">нажмите сюда</a>.`;
+  if (!opened) window.location.href = link;
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  ПЕРВЫЙ ЗАПУСК
+// ═════════════════════════════════════════════════════════════════
+renderPacks();
+updateOrderSum();
+</script>
+</body>
+</html>
