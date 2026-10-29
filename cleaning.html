@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Чистовик: уборка квартир и офисов с расчётом цены онлайн</title>
+<meta name="description" content="Посчитайте стоимость уборки за минуту и оставьте заявку. Цена фиксируется до приезда бригады.">
+<meta name="theme-color" content="#F4F7FC">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  /* ── 1. Цвета, шрифт, размеры: всё в одном месте ───────────────── */
+  :root {
+    --paper: #F4F7FC;   /* фон страницы */
+    --white: #FFFFFF;
+    --ink: #0E1A2B;     /* основной текст и тёмные блоки */
+    --muted: #56637A;   /* второстепенный текст */
+    --blue: #2455F4;    /* главный акцент: кнопки, выбранное */
+    --blue-deep: #1A3CC0;
+    --tint: #E6ECFF;    /* светло-голубой фон выбранного */
+    --yellow: #FFD43B;  /* второй акцент, цвет резиновых перчаток */
+    --line: #D9E1EF;    /* тонкие линии */
+    --font: "Onest", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 17px/1.55 var(--font);
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1, h2, h3, p, ul, ol, figure, blockquote { margin: 0; }
+  ul, ol { padding: 0; list-style: none; }
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  button, input { font: inherit; color: inherit; }
+  legend { padding: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .section { padding: 56px 0; scroll-margin-top: 12px; }
+  .section--white { background: var(--white); }
+  .section--tint { background: var(--tint); }
+  h2 { font-size: clamp(26px, 6vw, 38px); line-height: 1.12; letter-spacing: -0.02em; font-weight: 800; }
+  .lead { color: var(--muted); margin-top: 10px; max-width: 56ch; }
+
+  /* ── 2. Кнопки ─────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 52px; padding: 0 24px;
+    border: 0; border-radius: 14px;
+    background: var(--blue); color: var(--white);
+    font-weight: 700; font-size: 17px; text-decoration: none; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--blue-deep); }
+  .btn--yellow { background: var(--yellow); color: var(--ink); }
+  .btn--yellow:hover { background: #F5C61E; }
+  .btn--block { width: 100%; }
+
+  /* ── 3. Шапка ──────────────────────────────────────────────────── */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; letter-spacing: -0.02em; text-decoration: none; }
+  .logo-mark { width: 30px; height: 30px; border-radius: 9px; background: var(--yellow); display: grid; place-items: center; }
+  .logo-mark svg { width: 18px; height: 18px; stroke: var(--ink); }
+  .nav { display: none; }
+  .top .btn { min-height: 44px; padding: 0 18px; font-size: 15px; }
+
+  /* ── 4. Первый экран ───────────────────────────────────────────── */
+  .hero { padding: 16px 0 56px; }
+  .hero-grid { display: grid; gap: 40px; }
+  h1 { font-size: clamp(34px, 9vw, 58px); line-height: 1.04; letter-spacing: -0.03em; font-weight: 800; }
+  .hero p.lead { font-size: 19px; margin-top: 16px; color: var(--muted); }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 26px; }
+  .text-link { font-weight: 600; color: var(--blue); text-underline-offset: 4px; }
+  .facts { margin-top: 30px; display: grid; gap: 10px; }
+  .facts li { display: flex; gap: 10px; align-items: flex-start; }
+  .facts svg { flex: none; width: 22px; height: 22px; margin-top: 2px; stroke: var(--blue); }
+
+  /* Сметa-пример: показывает, что считает калькулятор */
+  .ticket {
+    position: relative; background: var(--white);
+    border: 1px solid var(--line); border-radius: 6px 6px 20px 20px;
+    padding: 28px 22px 20px;
+  }
+  .ticket::before {
+    content: ""; position: absolute; left: -1px; right: -1px; top: -12px; height: 12px;
+    background: var(--yellow); border-radius: 8px 8px 0 0;
+  }
+  .ticket-title { font-weight: 700; font-size: 15px; color: var(--muted); }
+  .ticket-rows { margin-top: 14px; }
+  .ticket-rows li { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .ticket-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; font-weight: 800; font-size: 26px; letter-spacing: -0.02em; }
+  .ticket-note { margin-top: 10px; font-size: 14px; color: var(--muted); }
+
+  /* ── 5. Калькулятор ────────────────────────────────────────────── */
+  .calc-grid { display: grid; gap: 32px; margin-top: 32px; }
+  .field-title { font-weight: 700; font-size: 18px; margin: 0 0 12px; }
+  .field + .field { margin-top: 30px; }
+
+  .types { display: grid; gap: 10px; }
+  .type { position: relative; display: block; cursor: pointer; }
+  .type input { position: absolute; opacity: 0; inset: 0; }
+  .type-body {
+    display: grid; grid-template-columns: 1fr auto; gap: 2px 14px;
+    padding: 14px 16px; border: 2px solid var(--line); border-radius: 16px; background: var(--white);
+  }
+  .type input:checked + .type-body { border-color: var(--blue); background: var(--tint); }
+  .type input:focus-visible + .type-body { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .type-name { font-weight: 700; }
+  .type-rate { font-weight: 700; grid-row: span 2; align-self: center; text-align: right; }
+  .type-desc { color: var(--muted); font-size: 15px; line-height: 1.4; }
+
+  .area-row { display: grid; grid-template-columns: 1fr 104px; gap: 18px; align-items: center; }
+  .area-input { display: flex; align-items: center; gap: 8px; }
+  .area-input input {
+    width: 100%; min-height: 48px; padding: 0 12px; text-align: center;
+    border: 2px solid var(--line); border-radius: 12px; background: var(--white); font-weight: 700; font-size: 18px;
+  }
+  .area-input span { color: var(--muted); }
+  .area-hint { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; margin: 0; --p: 20%; }
+  input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(to right, var(--blue) var(--p), var(--line) var(--p)); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%; background: var(--white); border: 4px solid var(--blue); }
+  input[type=range]::-moz-range-track { height: 8px; border-radius: 99px; background: var(--line); }
+  input[type=range]::-moz-range-progress { height: 8px; border-radius: 99px; background: var(--blue); }
+  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 4px solid var(--blue); }
+
+  .extras li { border-bottom: 1px solid var(--line); }
+  .extra-main { display: flex; align-items: center; gap: 14px; padding: 14px 0; cursor: pointer; }
+  .extra-main input {
+    -webkit-appearance: none; appearance: none; flex: none;
+    width: 26px; height: 26px; margin: 0; border: 2px solid var(--muted); border-radius: 8px; background: var(--white) center / 16px no-repeat;
+  }
+  .extra-main input:checked {
+    background-color: var(--blue); border-color: var(--blue);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E");
+  }
+  .extra-name { flex: 1; font-weight: 500; }
+  .extra-price { color: var(--muted); font-size: 15px; white-space: nowrap; }
+  .stepper { display: flex; align-items: center; gap: 6px; padding: 0 0 14px 40px; }
+  .stepper button {
+    width: 40px; height: 40px; border: 0; border-radius: 12px; background: var(--paper);
+    font-size: 22px; font-weight: 600; cursor: pointer;
+  }
+  .stepper output { min-width: 80px; text-align: center; font-weight: 600; }
+
+  .result { background: var(--ink); color: var(--white); border-radius: 22px; padding: 26px 22px; }
+  .result-label { color: #A9B6CC; font-size: 15px; }
+  .result-total { font-size: clamp(40px, 11vw, 54px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-top: 4px; }
+  .result-lines { margin: 18px 0 0; border-top: 1px solid #2A3A55; }
+  .result-lines li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid #2A3A55; font-size: 15px; }
+  .result-lines b { font-weight: 600; white-space: nowrap; }
+  .result-time { margin-top: 16px; font-size: 15px; color: #C9D3E4; }
+  .result .btn { margin-top: 20px; }
+  .result-note { margin-top: 12px; font-size: 13px; color: #8FA0BC; }
+
+  /* ── 6. Что входит ─────────────────────────────────────────────── */
+  .table-scroll { overflow-x: auto; margin-top: 28px; border: 1px solid var(--line); border-radius: 18px; background: var(--white); }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td { padding: 13px 6px; text-align: center; border-bottom: 1px solid var(--line); }
+  th:first-child, td:first-child { width: 40%; padding-left: 14px; }
+  th { font-size: 12px; font-weight: 700; color: var(--muted); background: var(--paper); }
+  th:first-child, td:first-child { text-align: left; }
+  td:first-child { font-weight: 500; font-size: 15px; line-height: 1.35; }
+  tr:last-child td { border-bottom: 0; }
+  td svg { margin: 0 auto; width: 22px; height: 22px; stroke: var(--blue); }
+  .dash { color: #AAB6C9; }
+  .table-note { margin-top: 14px; color: var(--muted); font-size: 15px; }
+
+  /* ── 7. Как проходит заказ ─────────────────────────────────────── */
+  .steps { display: grid; gap: 26px; margin-top: 32px; counter-reset: step; }
+  .steps li { position: relative; padding-left: 64px; counter-increment: step; }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 0; top: -2px;
+    width: 46px; height: 46px; border-radius: 50%; background: var(--yellow);
+    display: grid; place-items: center; font-weight: 800; font-size: 20px;
+  }
+  .steps h3 { font-size: 19px; font-weight: 700; }
+  .steps p { color: var(--muted); margin-top: 4px; }
+
+  /* ── 8. Гарантии ───────────────────────────────────────────────── */
+  .promises { display: grid; margin-top: 28px; }
+  .promises li { padding: 22px 0; border-top: 1px solid #B8C6EE; }
+  .promises h3 { font-size: 20px; font-weight: 700; }
+  .promises p { color: #34445F; margin-top: 6px; }
+
+  /* ── 9. Отзывы ─────────────────────────────────────────────────── */
+  .quotes { display: grid; gap: 22px; margin-top: 28px; }
+  .quote { border-left: 4px solid var(--yellow); padding: 2px 0 2px 18px; }
+  .quote p { font-size: 18px; }
+  .quote footer { margin-top: 8px; color: var(--muted); font-size: 15px; }
+  .demo-note { margin-top: 24px; font-size: 14px; color: var(--muted); }
+
+  /* ── 10. Вопросы ───────────────────────────────────────────────── */
+  .faq { margin-top: 24px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    list-style: none; cursor: pointer; padding: 18px 40px 18px 0; position: relative; font-weight: 600; font-size: 18px;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: ""; position: absolute; right: 4px; top: 50%; width: 12px; height: 12px;
+    border-right: 3px solid var(--blue); border-bottom: 3px solid var(--blue);
+    transform: translateY(-70%) rotate(45deg); transition: transform 0.2s;
+  }
+  .faq details[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+  .faq details p { padding: 0 0 18px; color: var(--muted); max-width: 62ch; }
+
+  /* ── 11. Заявка ────────────────────────────────────────────────── */
+  .order { background: var(--ink); color: var(--white); color-scheme: dark; }
+  .order-grid { display: grid; gap: 32px; }
+  .order .lead { color: #A9B6CC; }
+  .order-sum { margin-top: 20px; padding: 14px 16px; border-radius: 14px; background: #17263E; }
+  .order-sum a { color: var(--yellow); }
+  .form { display: grid; gap: 18px; }
+  .form label.lbl, .form .lbl { display: block; font-weight: 600; margin-bottom: 8px; }
+  .form input[type=text], .form input[type=tel], .form input[type=date] {
+    width: 100%; min-height: 52px; padding: 0 14px;
+    border: 2px solid #34476A; border-radius: 12px; background: #17263E; color: var(--white); font-size: 17px;
+  }
+  .form input::placeholder { color: #7D8DA9; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; }
+  .chip input { position: absolute; opacity: 0; inset: 0; }
+  .chip span { display: block; padding: 10px 16px; border: 2px solid #34476A; border-radius: 999px; cursor: pointer; }
+  .chip input:checked + span { background: var(--yellow); border-color: var(--yellow); color: var(--ink); font-weight: 700; }
+  .chip input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 2px; }
+  .form-error { min-height: 22px; color: #FFB4A8; font-size: 15px; }
+  .form-hint { color: #8FA0BC; font-size: 14px; }
+  .form-status a { color: var(--yellow); }
+
+  /* ── 12. Подвал ────────────────────────────────────────────────── */
+  .foot { background: #08111F; color: #8FA0BC; padding: 26px 0 calc(100px + env(safe-area-inset-bottom, 0px)); font-size: 14px; } /* запас под нижнюю панель */
+
+  /* ── 13. Нижняя панель на телефоне ─────────────────────────────── */
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: var(--white); border-top: 1px solid var(--line);
+    transform: translateY(100%); visibility: hidden; transition: transform 0.25s, visibility 0.25s;
+  }
+  .bar.on { transform: none; visibility: visible; }
+  .bar-price { font-size: 13px; color: var(--muted); line-height: 1.2; }
+  .bar-price b { display: block; font-size: 22px; color: var(--ink); letter-spacing: -0.02em; }
+  .bar .btn { min-height: 48px; padding: 0 22px; }
+
+  /* ── 14. Планшет и компьютер ───────────────────────────────────── */
+  @media (min-width: 900px) {
+    .foot { padding-bottom: 30px; }
+    .section { padding: 88px 0; }
+    th { font-size: 14px; }
+    .nav { display: flex; gap: 28px; }
+    .nav a { text-decoration: none; font-weight: 500; }
+    .nav a:hover { color: var(--blue); }
+    .hero { padding: 48px 0 88px; }
+    .hero-grid { grid-template-columns: 1.15fr 0.85fr; align-items: center; gap: 64px; }
+    .ticket { transform: rotate(1.4deg); }
+    .calc-grid { grid-template-columns: 1.2fr 0.8fr; gap: 56px; align-items: start; }
+    .result { position: sticky; top: 24px; }
+    .types { grid-template-columns: repeat(3, 1fr); }
+    .type-body { grid-template-columns: 1fr; }
+    .type-rate { grid-row: auto; text-align: left; margin-top: 8px; }
+    .steps { grid-template-columns: repeat(4, 1fr); gap: 28px; }
+    .steps li { padding: 62px 0 0; }
+    .promises { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .quotes { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .order-grid { grid-template-columns: 0.9fr 1.1fr; gap: 72px; align-items: start; }
+    .bar { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+    .ticket { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Иконки: объявляем один раз, дальше вставляем через <use> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<header class="wrap top">
+  <a class="logo" href="#top" aria-label="Чистовик, на главную">
+    <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg></span>
+    Чистовик
+  </a>
+  <nav class="nav" aria-label="Разделы">
+    <a href="#calc">Расчёт</a>
+    <a href="#scope">Что входит</a>
+    <a href="#faq">Вопросы</a>
+  </nav>
+  <a class="btn" href="#order">Заказать</a>
+</header>
+
+<main id="top">
+
+  <!-- Блок 1. Первый экран -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Уборка квартир и офисов с фиксированной ценой</h1>
+        <p class="lead">Посчитайте стоимость за минуту и оставьте заявку. Цену называем до приезда и не меняем после.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#calc">Рассчитать стоимость</a>
+          <a class="text-link" href="#scope">Что входит в уборку</a>
+        </div>
+        <ul class="facts">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Свои средства и оборудование</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Переделаем бесплатно, если что-то не устроит</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Работаем по договору и выдаём чек</li>
+        </ul>
+      </div>
+
+      <aside class="ticket" aria-label="Пример расчёта">
+        <p class="ticket-title">Пример расчёта</p>
+        <ul class="ticket-rows num">
+          <li><span>Генеральная уборка, 50 м²</span><b>8 000 ₽</b></li>
+          <li><span>Мытьё окон × 3</span><b>1 200 ₽</b></li>
+        </ul>
+        <div class="ticket-total num"><span>Итого</span><span>9 200 ₽</span></div>
+        <p class="ticket-note">Так же считает калькулятор ниже. Подставьте свою площадь.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Блок 2. Калькулятор -->
+  <section class="section section--white" id="calc">
+    <div class="wrap">
+      <h2>Рассчитайте стоимость</h2>
+      <p class="lead">Выберите тип уборки, укажите площадь и отметьте, что нужно добавить. Итог обновляется сразу.</p>
+
+      <div class="calc-grid">
+        <div>
+          <fieldset class="field" style="border:0;padding:0;margin:0;min-width:0">
+            <legend class="field-title">Тип уборки</legend>
+            <div class="types" id="types"></div>
+          </fieldset>
+
+          <div class="field">
+            <label class="field-title" for="areaNum">Площадь</label>
+            <div class="area-row">
+              <div>
+                <input type="range" id="areaRange" min="20" max="200" step="5" value="50" aria-label="Площадь, ползунок">
+                <div class="area-hint num"><span>20 м²</span><span>200 м²</span></div>
+              </div>
+              <div class="area-input">
+                <input type="number" id="areaNum" inputmode="numeric" min="10" max="500" value="50">
+                <span>м²</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <p class="field-title">Дополнительно</p>
+            <ul class="extras" id="extras"></ul>
+          </div>
+        </div>
+
+        <aside class="result" aria-live="polite">
+          <p class="result-label">Стоимость</p>
+          <p class="result-total num" id="total">0 ₽</p>
+          <ul class="result-lines num" id="lines"></ul>
+          <p class="result-time" id="time"></p>
+          <a class="btn btn--yellow btn--block" href="#order">Оставить заявку</a>
+          <p class="result-note">Минимальный заказ 3 000 ₽. Цены на этой странице демонстрационные.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 3. Что входит -->
+  <section class="section" id="scope">
+    <div class="wrap">
+      <h2>Что входит в каждый тип уборки</h2>
+      <p class="lead">Генеральная включает всё из поддерживающей и добавляет глубокую чистку. После ремонта включает всё из генеральной.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Работа</th>
+              <th scope="col">Поддержи&shy;вающая</th>
+              <th scope="col">Гене&shy;ральная</th>
+              <th scope="col">После ремонта</th>
+            </tr>
+          </thead>
+          <tbody id="scopeBody"></tbody>
+        </table>
+      </div>
+      <p class="table-note">Окна, балкон, духовку, холодильник и химчистку дивана заказывайте отдельно в калькуляторе.</p>
+    </div>
+  </section>
+
+  <!-- Блок 4. Как проходит заказ -->
+  <section class="section section--white">
+    <div class="wrap">
+      <h2>Как проходит заказ</h2>
+      <ol class="steps">
+        <li>
+          <h3>Оставляете заявку</h3>
+          <p>Выбираете расчёт и удобное время. Это занимает минуту.</p>
+        </li>
+        <li>
+          <h3>Подтверждаем цену</h3>
+          <p>Менеджер уточняет детали и фиксирует стоимость до приезда.</p>
+        </li>
+        <li>
+          <h3>Бригада приезжает</h3>
+          <p>Привозим всё необходимое. Вам не нужно ничего готовить.</p>
+        </li>
+        <li>
+          <h3>Принимаете и оплачиваете</h3>
+          <p>Проверяете результат вместе с бригадой. Платите только после приёмки.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Блок 5. Гарантии -->
+  <section class="section section--tint">
+    <div class="wrap">
+      <h2>Почему нам доверяют</h2>
+      <ul class="promises">
+        <li>
+          <h3>Цена не меняется</h3>
+          <p>Сумма из расчёта остаётся той же после приезда. Доплат за «грязную квартиру» нет.</p>
+        </li>
+        <li>
+          <h3>Переделаем бесплатно</h3>
+          <p>Если что-то не устроило, сообщите в течение суток, и мы вернёмся и исправим.</p>
+        </li>
+        <li>
+          <h3>Договор и чек</h3>
+          <p>Работаем официально, фиксируем объём и стоимость в договоре.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Блок 6. Отзывы -->
+  <section class="section">
+    <div class="wrap">
+      <h2>Что говорят клиенты</h2>
+      <div class="quotes">
+        <blockquote class="quote">
+          <p>Заказала генеральную перед приездом родителей. Пришли вдвоём, управились за четыре часа, цена совпала с расчётом.</p>
+          <footer>Анна, квартира 54 м²</footer>
+        </blockquote>
+        <blockquote class="quote">
+          <p>После ремонта оставалась белая пыль везде. Отмыли даже радиаторы и подоконники.</p>
+          <footer>Игорь, студия 38 м²</footer>
+        </blockquote>
+        <blockquote class="quote">
+          <p>Удобно, что стоимость видно сразу. Не пришлось ждать звонка менеджера, чтобы узнать цену.</p>
+          <footer>Мария, офис 70 м²</footer>
+        </blockquote>
+      </div>
+      <p class="demo-note">Пример блока отзывов: тексты и имена демонстрационные.</p>
+    </div>
+  </section>
+
+  <!-- Блок 7. Вопросы -->
+  <section class="section section--white" id="faq">
+    <div class="wrap">
+      <h2>Частые вопросы</h2>
+      <div class="faq">
+        <details>
+          <summary>Нужно ли быть дома во время уборки?</summary>
+          <p>Нет, можно оставить ключи или доверенное лицо. Но при первом заказе мы советуем быть на приёмке, чтобы сразу обсудить пожелания.</p>
+        </details>
+        <details>
+          <summary>Что, если площадь окажется больше, чем в заявке?</summary>
+          <p>Менеджер уточнит площадь при подтверждении и пересчитает стоимость до приезда. После согласования цена не меняется.</p>
+        </details>
+        <details>
+          <summary>Какие средства вы используете?</summary>
+          <p>Привозим свои профессиональные средства и оборудование. Если у вас аллергия на какие-то составы, напишите об этом в заявке.</p>
+        </details>
+        <details>
+          <summary>Как оплатить?</summary>
+          <p>Оплата после приёмки работы: наличными, переводом или картой. Чек выдаём в любом случае.</p>
+        </details>
+        <details>
+          <summary>Можно ли перенести уборку?</summary>
+          <p>Да, предупредите нас не позднее чем за 12 часов, и мы перенесём бригаду без штрафов.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 8. Заявка -->
+  <section class="section order" id="order">
+    <div class="wrap order-grid">
+      <div>
+        <h2>Оставьте заявку</h2>
+        <p class="lead">Мы подтвердим цену и время. Заявка откроется в Telegram готовым сообщением, останется нажать «Отправить».</p>
+        <p class="order-sum num" id="orderSum"></p>
+      </div>
+
+      <form class="form" id="form" novalidate>
+        <div>
+          <label class="lbl" for="fName">Как к вам обращаться</label>
+          <input type="text" id="fName" autocomplete="given-name" placeholder="Имя">
+        </div>
+        <div>
+          <label class="lbl" for="fPhone">Телефон</label>
+          <input type="tel" id="fPhone" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00">
+        </div>
+        <div>
+          <label class="lbl" for="fDate">Дата уборки</label>
+          <input type="date" id="fDate">
+        </div>
+        <fieldset style="border:0;padding:0;margin:0;min-width:0">
+          <legend class="lbl">Удобное время</legend>
+          <div class="chips" id="slots"></div>
+        </fieldset>
+        <p class="form-error" id="formError" role="alert"></p>
+        <button class="btn btn--yellow btn--block" type="submit">Отправить заявку в Telegram</button>
+        <p class="form-hint form-status" id="formStatus"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">Чистовик — учебный проект. Компания, цены и отзывы вымышлены, страница сделана как пример работы.</div>
+</footer>
+
+<!-- Нижняя панель на телефоне: цена всегда на виду -->
+<div class="bar" id="bar">
+  <div class="bar-price">Ваш расчёт<b class="num" id="barTotal">0 ₽</b></div>
+  <a class="btn" href="#order">Заказать</a>
+</div>
+
+<script>
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 1. НАСТРОЙКИ ПОД КЛИЕНТА (меняете только этот блок)
+// ═════════════════════════════════════════════════════════════════
+const MANAGER = 'your_username'; // ник менеджера в Telegram, без @
+
+// Типы уборки: rate — цена за 1 м², speed — сколько м² за час убирает один человек
+const TYPES = [
+  { id: 'support', name: 'Поддерживающая', title: 'Поддерживающая уборка', desc: 'Для чистой квартиры: освежить и убрать пыль', rate: 90,  speed: 20 },
+  { id: 'general', name: 'Генеральная',    title: 'Генеральная уборка',    desc: 'Глубокая чистка всех поверхностей',          rate: 160, speed: 10 },
+  { id: 'repair',  name: 'После ремонта',  title: 'Уборка после ремонта',  desc: 'Строительная пыль, краска, клей',            rate: 220, speed: 7.5 },
+];
+
+// Дополнительные услуги: qty:true значит, можно выбрать количество; min — минут на одну штуку
+const EXTRAS = [
+  { id: 'windows', name: 'Мытьё окон',         price: 400,  unit: 'за окно', qty: true, noun: 'окон', min: 15 },
+  { id: 'balcony', name: 'Балкон или лоджия',  price: 800,  min: 30 },
+  { id: 'fridge',  name: 'Холодильник внутри', price: 600,  min: 30 },
+  { id: 'oven',    name: 'Духовка',            price: 700,  min: 30 },
+  { id: 'sofa',    name: 'Химчистка дивана',   price: 1800, min: 60 },
+];
+
+const MIN_ORDER = 3000; // минимальная сумма заказа
+
+// Таблица «что входит»: [работа, поддерживающая, генеральная, после ремонта]
+const SCOPE = [
+  ['Влажная уборка полов и плинтусов',        1, 1, 1],
+  ['Пыль на мебели и подоконниках',           1, 1, 1],
+  ['Санузел: сантехника, плитка, зеркала',    1, 1, 1],
+  ['Кухня: фасады, плита, мойка',             1, 1, 1],
+  ['Мытьё дверей, выключателей и розеток',    0, 1, 1],
+  ['Чистка за мебелью и на шкафах',           0, 1, 1],
+  ['Мытьё люстр и светильников',              0, 1, 1],
+  ['Удаление следов краски, клея и штукатурки', 0, 0, 1],
+  ['Уборка строительной пыли со всех поверхностей', 0, 0, 1],
+];
+
+const SLOTS = ['Любое', '9–12', '12–16', '16–20'];
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 2. СОСТОЯНИЕ: то, что сейчас выбрал посетитель
+// ═════════════════════════════════════════════════════════════════
+const state = {
+  type: 'general',
+  area: 50,
+  extras: { windows: 3 }, // { id услуги: количество }, по умолчанию 3 окна, как в примере сверху
+};
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 3. РАСЧЁТ (чистая функция: берёт state, возвращает цифры)
+// ═════════════════════════════════════════════════════════════════
+const money = (n) => n.toLocaleString('ru-RU') + ' ₽';
+
+function calculate() {
+  const type = TYPES.find((t) => t.id === state.type);
+  const lines = [{ label: `${type.title}, ${state.area} м²`, sum: type.rate * state.area }];
+  let extraMinutes = 0;
+
+  EXTRAS.forEach((e) => {
+    const qty = state.extras[e.id] || 0;
+    if (qty > 0) {
+      lines.push({ label: qty > 1 ? `${e.name} × ${qty}` : e.name, sum: e.price * qty });
+      extraMinutes += e.min * qty;
+    }
+  });
+
+  const subtotal = lines.reduce((s, l) => s + l.sum, 0);
+  const total = Math.max(subtotal, MIN_ORDER);
+  if (total > subtotal) lines.push({ label: 'Доплата до минимального заказа', sum: total - subtotal });
+
+  // Сколько людей приедет и сколько часов это займёт
+  let people = state.area <= 45 ? 1 : state.area <= 90 ? 2 : 3;
+  if (type.id === 'repair' && people < 2) people = 2;
+  const rawHours = (state.area / type.speed + extraMinutes / 60) / people;
+  const hours = Math.max(2, Math.ceil(rawHours * 2) / 2); // округляем вверх до получаса
+
+  return { type, lines, total, people, hours };
+}
+
+function hoursText(h) {
+  return Number.isInteger(h) ? `${h} ч` : `${String(h).replace('.', ',')} ч`;
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 4. НАХОДИМ ЭЛЕМЕНТЫ СТРАНИЦЫ
+// ═════════════════════════════════════════════════════════════════
+const $ = (id) => document.getElementById(id);
+const typesEl = $('types'), extrasEl = $('extras');
+const rangeEl = $('areaRange'), numEl = $('areaNum');
+const totalEl = $('total'), linesEl = $('lines'), timeEl = $('time');
+const barTotal = $('barTotal'), orderSum = $('orderSum');
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 5. РИСУЕМ ЭЛЕМЕНТЫ ИЗ ДАННЫХ (чтобы не копировать HTML)
+// ═════════════════════════════════════════════════════════════════
+typesEl.innerHTML = TYPES.map((t) => `
+  <label class="type">
+    <input type="radio" name="type" value="${t.id}" ${t.id === state.type ? 'checked' : ''}>
+    <span class="type-body">
+      <span class="type-name">${t.name}</span>
+      <span class="type-rate num">${t.rate} ₽/м²</span>
+      <span class="type-desc">${t.desc}</span>
+    </span>
+  </label>`).join('');
+
+extrasEl.innerHTML = EXTRAS.map((e) => `
+  <li>
+    <label class="extra-main">
+      <input type="checkbox" data-extra="${e.id}">
+      <span class="extra-name">${e.name}</span>
+      <span class="extra-price num">${e.price.toLocaleString('ru-RU')} ₽${e.unit ? ' ' + e.unit : ''}</span>
+    </label>
+    ${e.qty ? `
+    <div class="stepper" data-stepper="${e.id}" hidden>
+      <button type="button" data-step="-1" data-for="${e.id}" aria-label="Меньше">−</button>
+      <output class="num" id="qty-${e.id}">1</output>
+      <button type="button" data-step="1" data-for="${e.id}" aria-label="Больше">+</button>
+    </div>` : ''}
+  </li>`).join('');
+
+$('scopeBody').innerHTML = SCOPE.map(([name, ...marks]) => `
+  <tr>
+    <td>${name}</td>
+    ${marks.map((m) => m
+      ? '<td><svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Входит"><use href="#i-check"/></svg></td>'
+      : '<td><span class="dash" aria-label="Не входит">—</span></td>').join('')}
+  </tr>`).join('');
+
+$('slots').innerHTML = SLOTS.map((s, i) => `
+  <label class="chip">
+    <input type="radio" name="slot" value="${s}" ${i === 0 ? 'checked' : ''}>
+    <span>${s}</span>
+  </label>`).join('');
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 6. ОБНОВЛЕНИЕ ЭКРАНА
+// ═════════════════════════════════════════════════════════════════
+function syncExtras() {
+  EXTRAS.forEach((e) => {
+    const qty = state.extras[e.id] || 0;
+    extrasEl.querySelector(`[data-extra="${e.id}"]`).checked = qty > 0;
+    if (e.qty) {
+      extrasEl.querySelector(`[data-stepper="${e.id}"]`).hidden = qty === 0;
+      $(`qty-${e.id}`).textContent = `${qty} ${e.noun}`;
+    }
+  });
+}
+
+function update() {
+  const r = calculate();
+
+  totalEl.textContent = money(r.total);
+  barTotal.textContent = money(r.total);
+  linesEl.innerHTML = r.lines.map((l) => `<li><span>${l.label}</span><b>${money(l.sum)}</b></li>`).join('');
+  const who = r.people === 1 ? '1 специалист' : `${r.people} специалиста`;
+  timeEl.textContent = `Около ${hoursText(r.hours)}, приедут: ${who}`;
+  orderSum.innerHTML = `Ваш расчёт: ${r.type.title.toLowerCase()}, ${state.area} м², <b>${money(r.total)}</b>. <a href="#calc">Изменить</a>`;
+
+  // Закрашиваем левую часть ползунка
+  const min = Number(rangeEl.min), max = Number(rangeEl.max);
+  const p = Math.min(100, Math.max(0, ((state.area - min) / (max - min)) * 100));
+  rangeEl.style.setProperty('--p', p + '%');
+}
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 7. РЕАКЦИЯ НА ДЕЙСТВИЯ ПОСЕТИТЕЛЯ
+// ═════════════════════════════════════════════════════════════════
+typesEl.addEventListener('change', (e) => {
+  state.type = e.target.value;
+  update();
+});
+
+rangeEl.addEventListener('input', () => {
+  state.area = Number(rangeEl.value);
+  numEl.value = state.area;
+  update();
+});
+
+numEl.addEventListener('input', () => {
+  const v = parseInt(numEl.value, 10);
+  if (!v || v < 10) return;               // пока человек печатает, не мешаем
+  state.area = Math.min(v, 500);
+  rangeEl.value = Math.min(Math.max(state.area, 20), 200);
+  update();
+});
+numEl.addEventListener('change', () => {  // когда закончил печатать, исправляем значение
+  numEl.value = state.area;
+});
+
+extrasEl.addEventListener('change', (e) => {
+  const id = e.target.dataset.extra;
+  if (!id) return;
+  state.extras[id] = e.target.checked ? (state.extras[id] || 1) : 0;
+  syncExtras();
+  update();
+});
+
+extrasEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-step]');
+  if (!btn) return;
+  const id = btn.dataset.for;
+  const next = (state.extras[id] || 1) + Number(btn.dataset.step);
+  state.extras[id] = Math.min(20, Math.max(1, next));
+  syncExtras();
+  update();
+});
+
+// Нижняя панель: показываем между калькулятором и формой
+const bar = $('bar');
+let calcReached = false, orderVisible = false;
+function toggleBar() { bar.classList.toggle('on', calcReached && !orderVisible); }
+
+new IntersectionObserver(([en]) => {
+  calcReached = en.isIntersecting || en.boundingClientRect.top < 0;
+  toggleBar();
+}, { threshold: 0.05 }).observe($('calc'));
+
+new IntersectionObserver(([en]) => {
+  orderVisible = en.isIntersecting;
+  toggleBar();
+}, { threshold: 0.05 }).observe($('order'));
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 8. ОТПРАВКА ЗАЯВКИ В TELEGRAM
+//  Сервер не нужен: открываем чат с менеджером, где текст уже напечатан.
+// ═════════════════════════════════════════════════════════════════
+const dateEl = $('fDate');
+const today = new Date();
+dateEl.min = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+$('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = $('fName').value.trim();
+  const phone = $('fPhone').value.trim();
+  const errorEl = $('formError');
+  errorEl.textContent = '';
+
+  if (!name) { errorEl.textContent = 'Укажите, как к вам обращаться.'; $('fName').focus(); return; }
+  if (phone.replace(/\D/g, '').length < 10) { errorEl.textContent = 'Проверьте телефон: нужно минимум 10 цифр.'; $('fPhone').focus(); return; }
+
+  const r = calculate();
+  const extrasText = EXTRAS
+    .filter((x) => state.extras[x.id] > 0)
+    .map((x) => (state.extras[x.id] > 1 ? `${x.name} × ${state.extras[x.id]}` : x.name))
+    .join(', ');
+  const dateText = dateEl.value
+    ? new Date(dateEl.value + 'T12:00:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
+    : 'не указана';
+  const slot = document.querySelector('input[name="slot"]:checked').value;
+
+  const text = [
+    'Заявка на уборку (демо-страница)',
+    `${r.type.title}, ${state.area} м²`,
+    `Дополнительно: ${extrasText || 'нет'}`,
+    `Расчётная стоимость: ${money(r.total)}`,
+    `Дата: ${dateText}`,
+    `Время: ${slot}`,
+    `Имя: ${name}`,
+    `Телефон: ${phone}`,
+  ].join('\n');
+
+  const link = `https://t.me/${MANAGER}?text=${encodeURIComponent(text)}`;
+  const opened = window.open(link, '_blank', 'noopener');
+  $('formStatus').innerHTML = `Если Telegram не открылся, <a href="${link}">нажмите сюда</a>.`;
+  if (!opened) window.location.href = link; // на случай, если браузер заблокировал новую вкладку
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  ПЕРВЫЙ ЗАПУСК
+// ═════════════════════════════════════════════════════════════════
+syncExtras();
+update();
+</script>
+</body>
+</html>
