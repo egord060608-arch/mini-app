@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>АгроЩит: защита зерна и складов от насекомых-вредителей</title>
+<meta name="description" content="Подберите средство под задачу, рассчитайте расход и получите коммерческое предложение. Демо-страница.">
+<meta name="theme-color" content="#12301F">
+
+<!-- ВАШ НИК: замените your_username на ник в Telegram, без @ -->
+<script>const MANAGER = 'your_username';</script>
+
+<!-- ЯНДЕКС.МЕТРИКА: впишите номер счётчика (0 значит «выключено») -->
+<script>const METRIKA_ID = 0;</script>
+<!--
+  Здесь вставляется код счётчика Яндекс.Метрики от заказчика:
+  <script> (function(m,e,t,r,i,k,a){...})(...); ym(12345678, "init", {...}); </script>
+  Цели в Метрике называем так: choose, calc, lead_form, lead_popup
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600;7..72,700&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ── 1. Цвета и шрифты ─────────────────────────────────────────── */
+  :root {
+    --green-900: #12301F;  /* глубокий зелёный: шапка, тёмные блоки */
+    --green-700: #1F4A30;
+    --gold: #D8A33A;       /* золото зерна: акценты */
+    --gold-soft: #F0DFAF;
+    --cream: #F6F1E3;      /* фон страницы */
+    --paper: #FBF8EF;
+    --wheat: #EFE8D2;      /* фон калькулятора */
+    --ink: #1B2A21;
+    --muted: #5E6B60;
+    --line: #DDD6C0;
+    --white: #FFFFFF;
+    --red: #9B2D22;
+    --font: "Golos Text", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: "Literata", Georgia, "Times New Roman", serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--cream); color: var(--ink); font: 400 17px/1.55 var(--font); -webkit-tap-highlight-color: transparent; }
+  h1, h2, h3, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+  ul, ol { padding: 0; list-style: none; }
+  svg { display: block; max-width: 100%; }
+  a { color: inherit; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  legend { padding: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .light :focus-visible, .modal :focus-visible { outline-color: var(--green-700); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  .section { padding: 60px 0; scroll-margin-top: 8px; }
+  h2 { font-family: var(--font-display); font-size: clamp(27px, 6.4vw, 40px); line-height: 1.12; letter-spacing: -0.02em; font-weight: 700; }
+  h3 { font-weight: 700; }
+  .lead { color: var(--muted); margin-top: 12px; max-width: 58ch; }
+  .note { margin-top: 18px; font-size: 14px; color: var(--muted); }
+
+  /* ── 2. Кнопки ─────────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px;
+    border: 0; border-radius: 12px; background: var(--green-900); color: var(--cream);
+    font-weight: 700; font-size: 17px; text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn:hover { background: var(--green-700); }
+  .btn--gold { background: var(--gold); color: var(--green-900); }
+  .btn--gold:hover { background: #E6B652; }
+  .btn--line { background: transparent; color: var(--green-900); box-shadow: inset 0 0 0 2px var(--green-900); min-height: 46px; padding: 0 20px; font-size: 16px; }
+  .btn--line:hover { background: var(--green-900); color: var(--cream); }
+  .btn--ghost { background: transparent; color: var(--cream); box-shadow: inset 0 0 0 2px rgba(246, 241, 227, 0.5); }
+  .btn--ghost:hover { background: rgba(246, 241, 227, 0.12); }
+  .btn--block { width: 100%; }
+
+  /* ── 3. Шапка и первый экран ───────────────────────────────────── */
+  .dark { background: var(--green-900); color: var(--cream); }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; max-width: 1080px; margin: 0 auto; position: relative; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 22px; text-decoration: none; }
+  .logo svg { width: 26px; height: 34px; color: var(--gold); }
+  .nav-desk { display: none; }
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .top .btn { min-height: 42px; padding: 0 16px; font-size: 15px; }
+  .menu summary { list-style: none; cursor: pointer; width: 42px; height: 42px; border-radius: 12px; box-shadow: inset 0 0 0 2px rgba(246, 241, 227, 0.45); display: grid; place-items: center; }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu summary i, .menu summary i::before, .menu summary i::after { display: block; width: 18px; height: 2px; background: var(--cream); border-radius: 2px; position: relative; content: ""; }
+  .menu summary i::before { position: absolute; top: -6px; }
+  .menu summary i::after { position: absolute; top: 6px; }
+  .menu nav { position: absolute; left: 20px; right: 20px; top: 66px; z-index: 20; background: var(--paper); color: var(--ink); border-radius: 16px; padding: 8px 18px; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+  .menu nav a { display: block; padding: 14px 0; border-bottom: 1px solid var(--line); text-decoration: none; font-weight: 600; }
+  .menu nav a:last-child { border: 0; }
+
+  .hero { padding: 12px 0 0; overflow: hidden; }
+  .hero-grid { display: grid; gap: 8px; align-items: end; }
+  h1 { font-family: var(--font-display); font-size: clamp(34px, 9vw, 58px); line-height: 1.06; letter-spacing: -0.025em; font-weight: 700; }
+  .hero .lead { color: #CFD8C9; font-size: 19px; margin-top: 16px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+  .facts { margin-top: 28px; display: grid; gap: 10px; }
+  .facts li { display: flex; gap: 10px; align-items: flex-start; }
+  .facts svg { flex: none; width: 22px; height: 22px; margin-top: 2px; stroke: var(--gold); }
+  .hero-art { margin: 20px -20px 0; color: var(--gold); }
+  .hero-art svg { width: 100%; height: auto; max-height: 380px; }
+  .hero::after { content: ""; display: block; height: 34px; background: #0A1D13; border-top: 8px solid var(--green-700); }
+
+  /* ── 4. Подбор продукта ────────────────────────────────────────── */
+  .choose-grid { display: grid; gap: 24px; margin-top: 28px; }
+  .needs { display: grid; gap: 10px; }
+  .need { position: relative; display: block; cursor: pointer; }
+  .need input { position: absolute; opacity: 0; inset: 0; }
+  .need-body { display: block; padding: 16px 18px; border: 2px solid var(--line); border-radius: 16px; background: var(--paper); }
+  .need input:checked + .need-body { border-color: var(--green-700); background: var(--white); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .need input:focus-visible + .need-body { outline: 3px solid var(--green-700); outline-offset: 2px; }
+  .need b { display: block; font-size: 18px; }
+  .need small { display: block; color: var(--muted); font-size: 15px; margin-top: 2px; }
+  .result { display: grid; gap: 16px; align-content: start; }
+  .prod { display: grid; grid-template-columns: 92px 1fr; gap: 16px; padding: 20px; background: var(--white); border: 1px solid var(--line); border-radius: 20px; }
+  .prod svg { width: 92px; height: auto; }
+  .prod h3 { font-family: var(--font-display); font-size: 24px; }
+  .prod-type { color: var(--muted); font-size: 15px; margin-top: 2px; }
+  .prod ul { margin: 12px 0 16px; display: grid; gap: 6px; font-size: 15px; }
+  .prod li { padding-left: 18px; position: relative; }
+  .prod li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+  /* ── 5. Принцип действия ───────────────────────────────────────── */
+  .how { background: var(--paper); }
+  .how-cols { display: grid; gap: 36px; margin-top: 30px; }
+  .how-cols h3 { font-family: var(--font-display); font-size: 22px; padding-bottom: 12px; border-bottom: 3px solid var(--green-900); }
+  .steps { margin-top: 18px; display: grid; gap: 18px; counter-reset: s; }
+  .steps li { position: relative; padding-left: 52px; counter-increment: s; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--gold); color: var(--green-900); display: grid; place-items: center; font-weight: 700; }
+  .steps b { display: block; }
+  .steps span { color: var(--muted); font-size: 15px; }
+
+  /* ── 6. Преимущества ───────────────────────────────────────────── */
+  .perks { display: grid; gap: 0; margin-top: 26px; }
+  .perks li { padding: 22px 0; border-top: 3px solid var(--gold); }
+  .perks h3 { font-family: var(--font-display); font-size: 21px; }
+  .perks p { color: var(--muted); margin-top: 6px; }
+
+  /* ── 7. Калькулятор расхода ────────────────────────────────────── */
+  .calc { background: var(--wheat); }
+  .calc-grid { display: grid; gap: 28px; margin-top: 28px; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; background: var(--white); border-radius: 14px; max-width: 460px; border: 0; margin: 0; }
+  .seg label { position: relative; display: block; cursor: pointer; }
+  .seg input { position: absolute; opacity: 0; inset: 0; }
+  .seg span { display: block; padding: 11px 8px; text-align: center; border-radius: 10px; font-weight: 700; line-height: 1.2; }
+  .seg input:checked + span { background: var(--green-900); color: var(--cream); }
+  .seg input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .field-title { font-weight: 700; font-size: 18px; margin: 26px 0 12px; display: block; }
+  .amount { display: grid; grid-template-columns: 1fr 130px; gap: 18px; align-items: center; }
+  .amount-input { display: flex; align-items: center; gap: 8px; }
+  .amount-input input { width: 100%; min-height: 48px; padding: 0 10px; text-align: center; border: 2px solid var(--line); border-radius: 12px; background: var(--white); font-weight: 700; font-size: 18px; }
+  .amount-input span { color: var(--muted); white-space: nowrap; }
+  .amount-hint { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 36px; background: transparent; margin: 0; --p: 20%; }
+  input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(to right, var(--green-700) var(--p), #D2C9A8 var(--p)); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%; background: var(--gold); border: 4px solid var(--green-900); }
+  input[type=range]::-moz-range-track { height: 8px; border-radius: 99px; background: #D2C9A8; }
+  input[type=range]::-moz-range-progress { height: 8px; border-radius: 99px; background: var(--green-700); }
+  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--gold); border: 4px solid var(--green-900); }
+  .out { background: var(--green-900); color: var(--cream); border-radius: 22px; padding: 26px 22px; }
+  .out-label { color: #AFC1B1; font-size: 15px; }
+  .out-big { font-family: var(--font-display); font-size: clamp(38px, 10vw, 52px); font-weight: 700; line-height: 1.1; margin-top: 4px; }
+  .out-big small { font-family: var(--font); font-size: 20px; font-weight: 500; }
+  .out-lines { margin: 18px 0 0; border-top: 1px solid #2E5640; }
+  .out-lines li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid #2E5640; font-size: 15px; }
+  .out .btn { margin-top: 20px; }
+  .out-note { margin-top: 12px; font-size: 13px; color: #8FA793; }
+
+  /* ── 8. Доверие ────────────────────────────────────────────────── */
+  .logos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .logos li { padding: 10px 18px; border: 2px solid var(--line); border-radius: 12px; font-family: var(--font-display); font-weight: 700; color: var(--muted); background: var(--paper); }
+  .docs { display: grid; gap: 12px; margin-top: 28px; }
+  .doc { padding: 18px 20px; border: 1px solid var(--line); border-left: 6px solid var(--gold); border-radius: 6px 14px 14px 6px; background: var(--white); }
+  .doc b { display: block; }
+  .doc span { color: var(--muted); font-size: 15px; }
+  .quotes { display: grid; gap: 22px; margin-top: 30px; }
+  .quote { border-left: 4px solid var(--green-700); padding: 2px 0 2px 18px; }
+  .quote p { font-size: 18px; }
+  .quote footer { margin-top: 8px; color: var(--muted); font-size: 15px; }
+
+  /* ── 9. Вопросы ────────────────────────────────────────────────── */
+  .faq { margin-top: 24px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { list-style: none; cursor: pointer; position: relative; padding: 18px 40px 18px 0; font-weight: 600; font-size: 18px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: ""; position: absolute; right: 4px; top: 50%; width: 12px; height: 12px; border-right: 3px solid var(--green-700); border-bottom: 3px solid var(--green-700); transform: translateY(-70%) rotate(45deg); transition: transform 0.2s; }
+  .faq details[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+  .faq details p { padding: 0 0 18px; color: var(--muted); max-width: 62ch; }
+
+  /* ── 10. Заявка ────────────────────────────────────────────────── */
+  .order .lead { color: #CFD8C9; }
+  .order-grid { display: grid; gap: 30px; }
+  .contacts { margin-top: 24px; display: grid; gap: 12px; }
+  .contacts dt { font-size: 14px; color: #AFC1B1; }
+  .contacts dd { font-weight: 600; }
+  .form { background: var(--white); color: var(--ink); border-radius: 22px; padding: 24px 20px; display: grid; gap: 16px; }
+  .lbl { display: block; font-weight: 600; margin-bottom: 8px; }
+  .form input[type=text], .form input[type=tel], .form input[type=email], .form select, .modal input[type=tel] {
+    width: 100%; min-height: 52px; padding: 0 14px; border: 2px solid var(--line); border-radius: 12px; background: var(--paper); font-size: 17px;
+  }
+  .form select { -webkit-appearance: none; appearance: none; padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B2A21' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 18px; }
+  .form input::placeholder, .modal input::placeholder { color: #8A948B; }
+  .trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .calc-line { padding: 12px 14px; border-radius: 12px; background: var(--wheat); font-size: 15px; }
+  .consent { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; cursor: pointer; }
+  .consent input { -webkit-appearance: none; appearance: none; flex: none; width: 26px; height: 26px; margin: 0; border: 2px solid var(--muted); border-radius: 8px; background: var(--white) center / 16px no-repeat; }
+  .consent input:checked { background-color: var(--green-700); border-color: var(--green-700);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+  .consent a, .link-btn { color: var(--green-700); font-weight: 600; text-underline-offset: 3px; }
+  .link-btn { background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+  .form-error { min-height: 22px; color: var(--red); font-size: 15px; font-weight: 600; }
+  .form-hint { color: var(--muted); font-size: 14px; }
+  .form-hint a { color: var(--green-700); }
+
+  .foot { background: #0A1D13; color: #8FA793; padding: 26px 0 30px; font-size: 14px; }
+
+  /* ── 11. Всплывающие окна ──────────────────────────────────────── */
+  .modal { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(10, 22, 14, 0.65); }
+  .modal.open { display: flex; }
+  .modal-box { position: relative; width: 100%; max-width: 440px; max-height: 90vh; overflow: auto; background: var(--white); color: var(--ink); border-radius: 22px; padding: 30px 24px 24px; }
+  .modal-box h3 { font-family: var(--font-display); font-size: 25px; line-height: 1.2; padding-right: 28px; }
+  .modal-box p { color: var(--muted); margin-top: 8px; }
+  .modal-box form { display: grid; gap: 14px; margin-top: 18px; }
+  .modal-x { position: absolute; top: 12px; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: var(--cream); font-size: 22px; line-height: 1; cursor: pointer; }
+
+  /* ── 12. Планшет и компьютер ───────────────────────────────────── */
+  @media (min-width: 900px) {
+    .section { padding: 96px 0; }
+    .menu { display: none; }
+    .nav-desk { display: flex; gap: 26px; }
+    .nav-desk a { text-decoration: none; font-weight: 500; opacity: 0.8; padding: 6px 0; border-bottom: 2px solid transparent; }
+    .nav-desk a:hover, .nav-desk a[aria-current="true"] { opacity: 1; border-bottom-color: var(--gold); }
+    .hero { padding-top: 24px; }
+    .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: center; }
+    .hero-grid > div:first-child { padding-bottom: 80px; }
+    .hero-art { margin: 0 -20px 0 0; align-self: end; }
+    .choose-grid { grid-template-columns: 0.8fr 1.2fr; gap: 48px; align-items: start; }
+    .how-cols { grid-template-columns: 1fr 1fr; gap: 64px; }
+    .perks { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .calc-grid { grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: start; }
+    .out { position: sticky; top: 24px; }
+    .docs { grid-template-columns: repeat(3, 1fr); }
+    .quotes { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .order-grid { grid-template-columns: 0.85fr 1.15fr; gap: 64px; align-items: start; }
+    .form { padding: 32px 30px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <!-- один колос: стебель и зёрна, красим через currentColor -->
+  <symbol id="ear" viewBox="0 0 60 200">
+    <path d="M30 200V52" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <g fill="currentColor">
+      <ellipse cx="30" cy="14" rx="6" ry="12"/>
+      <ellipse cx="19" cy="34" rx="6.5" ry="12" transform="rotate(-32 19 34)"/><ellipse cx="41" cy="34" rx="6.5" ry="12" transform="rotate(32 41 34)"/>
+      <ellipse cx="19" cy="53" rx="6.5" ry="12" transform="rotate(-32 19 53)"/><ellipse cx="41" cy="53" rx="6.5" ry="12" transform="rotate(32 41 53)"/>
+      <ellipse cx="19" cy="72" rx="6.5" ry="12" transform="rotate(-32 19 72)"/><ellipse cx="41" cy="72" rx="6.5" ry="12" transform="rotate(32 41 72)"/>
+      <ellipse cx="19" cy="91" rx="6.5" ry="12" transform="rotate(-32 19 91)"/><ellipse cx="41" cy="91" rx="6.5" ry="12" transform="rotate(32 41 91)"/>
+      <ellipse cx="19" cy="110" rx="6.5" ry="12" transform="rotate(-32 19 110)"/><ellipse cx="41" cy="110" rx="6.5" ry="12" transform="rotate(32 41 110)"/>
+    </g>
+  </symbol>
+</svg>
+
+<div class="dark">
+  <header class="top">
+    <a class="logo" href="#top" aria-label="АгроЩит, на главную">
+      <svg viewBox="0 0 60 200" fill="currentColor"><use href="#ear"/></svg>АгроЩит
+    </a>
+    <nav class="nav-desk" id="navDesk" aria-label="Разделы">
+      <a href="#choose">Подбор</a><a href="#how">Принцип</a><a href="#calc">Расчёт</a><a href="#trust">Доверие</a><a href="#faq">Вопросы</a>
+    </nav>
+    <div class="top-right">
+      <a class="btn btn--gold" href="#order">Получить КП</a>
+      <details class="menu" id="menu">
+        <summary aria-label="Меню"><i></i></summary>
+        <nav aria-label="Разделы">
+          <a href="#choose">Подбор продукта</a><a href="#how">Принцип действия</a><a href="#calc">Расчёт расхода</a><a href="#trust">Доверие</a><a href="#faq">Вопросы</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+
+  <!-- Блок 1. Первый экран -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Защитите зерно и склады от насекомых-вредителей</h1>
+        <p class="lead">Два средства под разные задачи: для помещений и для зерна при закладке на хранение. Подберите продукт, рассчитайте расход и получите коммерческое предложение.</p>
+        <div class="hero-actions">
+          <a class="btn btn--gold" href="#choose">Подобрать продукт</a>
+          <a class="btn btn--ghost" href="#order">Получить предложение</a>
+        </div>
+        <ul class="facts">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Подбор продукта под вашу задачу</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Расчёт расхода по объёму и тоннам</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-check"/></svg>Предложение с вашими цифрами</li>
+        </ul>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 420 432">
+          <g>
+            <use href="#ear" x="10"  y="210" width="70"  height="220" color="#B88A2E" transform="rotate(-14 45 430)"/>
+            <use href="#ear" x="60"  y="150" width="84"  height="280" color="#C99A33" transform="rotate(-8 102 430)"/>
+            <use href="#ear" x="320" y="130" width="84"  height="300" color="#C99A33" transform="rotate(9 362 430)"/>
+            <use href="#ear" x="140" y="90"  width="96"  height="340" color="#E3B34B" transform="rotate(4 188 430)"/>
+            <use href="#ear" x="232" y="70"  width="104" height="360" color="#D8A33A" transform="rotate(-3 284 430)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+</div>
+
+<main>
+  <!-- Блок 2. Подбор продукта -->
+  <section class="section" id="choose">
+    <div class="wrap">
+      <h2>Подберите средство под задачу</h2>
+      <p class="lead">Ответьте на один вопрос: что нужно обработать.</p>
+      <div class="choose-grid">
+        <fieldset class="needs" style="border:0;padding:0;margin:0;min-width:0">
+          <legend class="sr">Что нужно обработать</legend>
+          <label class="need"><input type="radio" name="need" value="room" checked><span class="need-body"><b>Помещение</b><small>Склад, ангар, элеватор, пустое хранилище</small></span></label>
+          <label class="need"><input type="radio" name="need" value="grain"><span class="need-body"><b>Зерно при закладке</b><small>Обработка зерна перед хранением</small></span></label>
+          <label class="need"><input type="radio" name="need" value="both"><span class="need-body"><b>И помещение, и зерно</b><small>Полная защита хранилища</small></span></label>
+        </fieldset>
+        <div class="result" id="result" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 3. Принцип действия -->
+  <section class="section how" id="how">
+    <div class="wrap">
+      <h2>Как работает каждое средство</h2>
+      <p class="lead">Коротко и по шагам. Подробные нормы и меры безопасности указаны в инструкции производителя.</p>
+      <div class="how-cols">
+        <div>
+          <h3>Щит-Дым для помещений</h3>
+          <ol class="steps">
+            <li><b>Подготовка</b><span>Помещение освобождают от людей и пищевых продуктов, закрывают окна и двери.</span></li>
+            <li><b>Запуск</b><span>Шашку активируют на месте. Дым заполняет объём, включая труднодоступные места.</span></li>
+            <li><b>Выдержка и проветривание</b><span>Время выдержки и допуск людей определяет инструкция.</span></li>
+          </ol>
+        </div>
+        <div>
+          <h3>Щит-Эко для зерна</h3>
+          <ol class="steps">
+            <li><b>Внесение</b><span>Сухой порошок добавляют в зерно при закладке на хранение.</span></li>
+            <li><b>Перемешивание</b><span>Порошок равномерно распределяют по партии.</span></li>
+            <li><b>Хранение</b><span>Зерно хранят в обычном режиме, следя за температурой и влажностью.</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 4. Преимущества для бизнеса -->
+  <section class="section" id="perks">
+    <div class="wrap">
+      <h2>Что получает хозяйство</h2>
+      <ul class="perks">
+        <li><h3>Подбор без звонков</h3><p>Выбираете задачу на странице и сразу видите подходящий продукт.</p></li>
+        <li><h3>Расчёт до заявки</h3><p>Количество упаковок и ориентир стоимости известны до разговора с менеджером.</p></li>
+        <li><h3>Документы к поставке</h3><p>Инструкции и паспорта продукции передаём вместе с коммерческим предложением.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Блок 5. Калькулятор расхода -->
+  <section class="section calc" id="calc">
+    <div class="wrap">
+      <h2>Рассчитайте расход</h2>
+      <p class="lead">Выберите, что обрабатываете, и укажите объём. Нормы и цены в этой демо-версии условные.</p>
+      <div class="calc-grid">
+        <div>
+          <fieldset class="seg">
+            <legend class="sr">Что обрабатываем</legend>
+            <label><input type="radio" name="mode" value="room" checked><span>Помещение</span></label>
+            <label><input type="radio" name="mode" value="grain"><span>Зерно</span></label>
+          </fieldset>
+
+          <label class="field-title" for="amtNum" id="amtTitle">Объём помещения</label>
+          <div class="amount">
+            <div>
+              <input type="range" id="amtRange" aria-labelledby="amtTitle">
+              <div class="amount-hint num"><span id="amtMin"></span><span id="amtMax"></span></div>
+            </div>
+            <div class="amount-input"><input type="number" id="amtNum" inputmode="numeric"><span id="amtUnit">м³</span></div>
+          </div>
+        </div>
+
+        <aside class="out" aria-live="polite">
+          <p class="out-label" id="outLabel"></p>
+          <p class="out-big num" id="outBig"></p>
+          <ul class="out-lines num" id="outLines"></ul>
+          <button class="btn btn--gold btn--block" type="button" id="toOrder">Получить КП с этим расчётом</button>
+          <p class="out-note">Ориентир. Окончательный расход определяет специалист по инструкции и условиям хранения.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 6. Доверие -->
+  <section class="section" id="trust">
+    <div class="wrap">
+      <h2>Нам доверяют</h2>
+      <ul class="logos"><li>Агро-Юг</li><li>Зерновой двор</li><li>Элеватор-М</li><li>КФХ Рассвет</li><li>Заречье</li></ul>
+      <div class="docs">
+        <div class="doc"><b>Декларация соответствия</b><span>№ ______ от __.__.____</span></div>
+        <div class="doc"><b>Инструкция по применению</b><span>Передаём с каждой поставкой</span></div>
+        <div class="doc"><b>Паспорт безопасности</b><span>№ ______ от __.__.____</span></div>
+      </div>
+      <div class="quotes">
+        <blockquote class="quote"><p>Заказали средство для склада на 6 000 м³. Количество шашек совпало с расчётом на странице.</p><footer>Главный агроном, КФХ</footer></blockquote>
+        <blockquote class="quote"><p>Удобно, что коммерческое предложение пришло с цифрами из калькулятора.</p><footer>Начальник склада</footer></blockquote>
+        <blockquote class="quote"><p>Подобрали средство за несколько минут, звонить не пришлось.</p><footer>Заведующий хранилищем</footer></blockquote>
+      </div>
+      <p class="note">Названия компаний, номера документов и отзывы демонстрационные.</p>
+    </div>
+  </section>
+
+  <!-- Блок 7. Вопросы -->
+  <section class="section how" id="faq">
+    <div class="wrap">
+      <h2>Частые вопросы</h2>
+      <div class="faq">
+        <details><summary>Чем отличаются Щит-Дым и Щит-Эко?</summary><p>Щит-Дым обрабатывает помещение, а Щит-Эко вносят в зерно при закладке. Для защиты хранилища часто нужны оба средства.</p></details>
+        <details><summary>Насколько точен расчёт на странице?</summary><p>Это ориентир по нормам демо-версии. Окончательный расход определяет специалист по инструкции и условиям хранения.</p></details>
+        <details><summary>Как быстро придёт коммерческое предложение?</summary><p>В рабочее время отвечаем в тот же день.</p></details>
+        <details><summary>Можно ли заказать оба продукта?</summary><p>Да, выберите «Оба продукта» в форме запроса.</p></details>
+        <details><summary>Нужна ли защита при обработке?</summary><p>Да. Меры безопасности и допуск людей указаны в инструкции, мы передаём её вместе с предложением.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 8. Заявка -->
+  <section class="section dark order" id="order">
+    <div class="wrap order-grid">
+      <div>
+        <h2>Получите персональное коммерческое предложение и расчёт</h2>
+        <p class="lead">Оставьте контакты, и мы подготовим предложение. Заявка откроется в Telegram готовым сообщением, останется нажать «Отправить».</p>
+        <dl class="contacts">
+          <div><dt>Телефон</dt><dd>+7 000 000-00-00</dd></div>
+          <div><dt>Почта</dt><dd>hello@example.com</dd></div>
+          <div><dt>Адрес</dt><dd>Москва, ул. Профессиональная, 7 (демо)</dd></div>
+        </dl>
+      </div>
+
+      <form class="form" id="form" novalidate>
+        <div class="trap" aria-hidden="true"><label>Не заполняйте это поле<input type="text" id="fTrap" tabindex="-1" autocomplete="off"></label></div>
+        <div><label class="lbl" for="fName">Имя</label><input type="text" id="fName" autocomplete="given-name" placeholder="Как к вам обращаться"></div>
+        <div><label class="lbl" for="fPhone">Телефон</label><input type="tel" id="fPhone" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00"></div>
+        <div><label class="lbl" for="fEmail">Email</label><input type="email" id="fEmail" autocomplete="email" placeholder="name@company.ru"></div>
+        <div>
+          <label class="lbl" for="fProduct">Продукт</label>
+          <select id="fProduct">
+            <option value="smoke">Щит-Дым (для помещений)</option>
+            <option value="eco">Щит-Эко (для зерна)</option>
+            <option value="both">Оба продукта</option>
+            <option value="unknown">Не знаю, нужна консультация</option>
+          </select>
+        </div>
+        <p class="calc-line num" id="calcLine" hidden></p>
+        <label class="consent"><input type="checkbox" id="fConsent"><span>Согласен на обработку персональных данных. <button type="button" class="link-btn" data-open="privacy">Политика конфиденциальности</button></span></label>
+        <p class="form-error" id="formError" role="alert"></p>
+        <button class="btn btn--block" type="submit">Отправить запрос</button>
+        <p class="form-hint" id="formStatus"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">АгроЩит — учебный проект. Компания, продукты, нормы расхода, цены, документы и отзывы вымышлены, страница сделана как пример работы по ТЗ.</div>
+</footer>
+
+<!-- Всплывающее окно с предложением (через 15–20 секунд при попытке уйти) -->
+<div class="modal" id="popup" role="dialog" aria-modal="true" aria-labelledby="popTitle">
+  <div class="modal-box light">
+    <button class="modal-x" type="button" data-close aria-label="Закрыть">×</button>
+    <h3 id="popTitle">Не уходите без расчёта</h3>
+    <p>Оставьте телефон, и специалист бесплатно подберёт средство и посчитает расход под ваш объём.</p>
+    <form id="popForm" novalidate>
+      <input type="tel" id="pPhone" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00" aria-label="Телефон">
+      <label class="consent"><input type="checkbox" id="pConsent"><span>Согласен на обработку персональных данных. <button type="button" class="link-btn" data-open="privacy">Политика</button></span></label>
+      <p class="form-error" id="popError" role="alert"></p>
+      <button class="btn btn--block" type="submit">Получить консультацию</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="privacy" role="dialog" aria-modal="true" aria-labelledby="privTitle">
+  <div class="modal-box light">
+    <button class="modal-x" type="button" data-close aria-label="Закрыть">×</button>
+    <h3 id="privTitle">Политика конфиденциальности</h3>
+    <p>Здесь размещается политика конфиденциальности заказчика. В этой демо-версии данные из формы используются только для ответа на запрос.</p>
+  </div>
+</div>
+
+<script>
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 1. ДАННЫЕ (меняете под клиента только этот блок)
+//  Ник менеджера и номер Метрики лежат в самом верху файла, в <head>.
+// ═════════════════════════════════════════════════════════════════
+const PRODUCTS = {
+  smoke: {
+    name: 'Щит-Дым', type: 'Дымовая шашка', where: 'Для помещений: склады, ангары, элеваторы', mode: 'room',
+    facts: ['Обрабатывает помещение целиком, включая труднодоступные места', 'Шашку активируют на месте, оборудование не нужно', 'Подходит для обработки перед загрузкой нового урожая'],
+    norm: 500,   // м³ помещения на одну шашку (в демо условно)
+    price: 1800, // цена одной шашки, ₽ (в демо условно)
+  },
+  eco: {
+    name: 'Щит-Эко', type: 'Сухой порошок', where: 'Для зерна при закладке на хранение', mode: 'grain',
+    facts: ['Вносится в зерно при закладке на хранение', 'Без запаха и вкуса зерна', 'Расход считается по тоннам'],
+    norm: 1,     // кг порошка на тонну зерна (в демо условно)
+    pack: 25,    // кг в одной упаковке
+    price: 4200, // цена упаковки, ₽ (в демо условно)
+  },
+};
+
+// Параметры ползунка для каждого режима калькулятора
+const MODES = {
+  room:  { title: 'Объём помещения', unit: 'м³', min: 500, max: 20000, step: 100, def: 4000 },
+  grain: { title: 'Количество зерна', unit: 'т',  min: 10,  max: 2000,  step: 10,  def: 200 },
+};
+
+const state = { need: 'room', mode: 'room', amount: { room: 4000, grain: 200 }, note: '' };
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 2. ВСПОМОГАТЕЛЬНОЕ
+// ═════════════════════════════════════════════════════════════════
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString('ru-RU');
+const money = (n) => fmt(n) + ' ₽';
+
+// Цель в Яндекс.Метрике: если счётчик не подключён, ничего не происходит
+function goal(name) {
+  try { if (METRIKA_ID && window.ym) window.ym(METRIKA_ID, 'reachGoal', name); } catch (e) { /* ничего */ }
+}
+
+// Рисунки упаковок: рисуем кодом, фото заказчика подставим позже
+const PACK = {
+  smoke: `<svg viewBox="0 0 120 150" role="img" aria-label="Упаковка Щит-Дым">
+    <defs><clipPath id="cs"><rect x="20" y="16" width="80" height="122" rx="12"/></clipPath></defs>
+    <g clip-path="url(#cs)"><rect x="20" y="16" width="80" height="122" fill="#101410"/><rect x="20" y="52" width="80" height="52" fill="#D8A33A"/><rect x="20" y="104" width="80" height="34" fill="#8E2B22"/><rect x="20" y="16" width="80" height="10" fill="#0A0D0A"/></g>
+    <text x="60" y="76" text-anchor="middle" font-family="Literata, serif" font-weight="700" font-size="17" fill="#12301F">ЩИТ</text>
+    <text x="60" y="94" text-anchor="middle" font-family="Literata, serif" font-weight="700" font-size="17" fill="#12301F">ДЫМ</text>
+    <text x="60" y="126" text-anchor="middle" font-family="Golos Text, sans-serif" font-weight="700" font-size="9" fill="#F6F1E3">ШАШКА</text></svg>`,
+  eco: `<svg viewBox="0 0 120 150" role="img" aria-label="Упаковка Щит-Эко">
+    <rect x="46" y="6" width="28" height="22" rx="5" fill="#101410"/>
+    <defs><clipPath id="ce"><rect x="22" y="26" width="76" height="114" rx="16"/></clipPath></defs>
+    <g clip-path="url(#ce)"><rect x="22" y="26" width="76" height="114" fill="#2A5E3C"/><rect x="22" y="62" width="76" height="46" fill="#D8A33A"/><rect x="22" y="108" width="76" height="32" fill="#8E2B22"/></g>
+    <text x="60" y="82" text-anchor="middle" font-family="Literata, serif" font-weight="700" font-size="17" fill="#12301F">ЩИТ-ЭКО</text>
+    <text x="60" y="49" text-anchor="middle" font-family="Golos Text, sans-serif" font-weight="700" font-size="9" fill="#F6F1E3">ПОРОШОК</text></svg>`,
+};
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 3. ПОДБОР ПРОДУКТА
+// ═════════════════════════════════════════════════════════════════
+function productCard(id) {
+  const p = PRODUCTS[id];
+  return `<article class="prod">${PACK[id]}<div>
+    <h3>${p.name}</h3><p class="prod-type">${p.type}. ${p.where}</p>
+    <ul>${p.facts.map((f) => `<li>${f}</li>`).join('')}</ul>
+    <button class="btn btn--line" type="button" data-calc="${p.mode}">Рассчитать расход</button>
+  </div></article>`;
+}
+
+function renderChoice() {
+  const ids = state.need === 'both' ? ['smoke', 'eco'] : [state.need === 'room' ? 'smoke' : 'eco'];
+  $('result').innerHTML = ids.map(productCard).join('');
+}
+
+document.querySelectorAll('input[name="need"]').forEach((r) => r.addEventListener('change', () => {
+  state.need = r.value;
+  renderChoice();
+  goal('choose');
+}));
+
+// кнопка «Рассчитать расход» внутри карточки продукта
+$('result').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-calc]');
+  if (!btn) return;
+  setMode(btn.dataset.calc);
+  document.querySelector(`input[name="mode"][value="${btn.dataset.calc}"]`).checked = true;
+  $('calc').scrollIntoView({ behavior: 'smooth' });
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 4. КАЛЬКУЛЯТОР РАСХОДА (чистая функция + отрисовка)
+// ═════════════════════════════════════════════════════════════════
+function calculate() {
+  const v = state.amount[state.mode];
+  if (state.mode === 'room') {
+    const p = PRODUCTS.smoke, count = Math.ceil(v / p.norm);
+    return { product: 'smoke', big: `${fmt(count)} <small>шашек</small>`, label: 'Потребуется Щит-Дым',
+      cost: count * p.price, text: `Щит-Дым, ${fmt(count)} шт. на ${fmt(v)} м³`,
+      lines: [['Объём помещения', `${fmt(v)} м³`], ['Норма (демо)', `1 шашка на ${p.norm} м³`], ['Цена за шашку (демо)', money(p.price)]] };
+  }
+  const p = PRODUCTS.eco, kg = v * p.norm, packs = Math.ceil(kg / p.pack);
+  return { product: 'eco', big: `${fmt(kg)} <small>кг порошка</small>`, label: 'Потребуется Щит-Эко',
+    cost: packs * p.price, text: `Щит-Эко, ${fmt(kg)} кг (${fmt(packs)} уп.) на ${fmt(v)} т зерна`,
+    lines: [['Количество зерна', `${fmt(v)} т`], ['Норма (демо)', `${p.norm} кг на тонну`], ['Упаковок по ' + p.pack + ' кг', `${fmt(packs)} шт.`], ['Цена за упаковку (демо)', money(p.price)]] };
+}
+
+function renderCalc() {
+  const m = MODES[state.mode], r = calculate();
+  $('outLabel').textContent = r.label;
+  $('outBig').innerHTML = r.big;
+  $('outLines').innerHTML = r.lines.map(([a, b]) => `<li><span>${a}</span><b>${b}</b></li>`).join('') +
+    `<li><span>Ориентир стоимости</span><b>${money(r.cost)}</b></li>`;
+  const range = $('amtRange');
+  range.style.setProperty('--p', Math.min(100, Math.max(0, ((state.amount[state.mode] - m.min) / (m.max - m.min)) * 100)) + '%');
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  const m = MODES[mode], range = $('amtRange'), num = $('amtNum');
+  $('amtTitle').textContent = m.title;
+  $('amtUnit').textContent = m.unit;
+  $('amtMin').textContent = `${fmt(m.min)} ${m.unit}`;
+  $('amtMax').textContent = `${fmt(m.max)} ${m.unit}`;
+  range.min = m.min; range.max = m.max; range.step = m.step;
+  range.value = Math.min(m.max, Math.max(m.min, state.amount[mode]));
+  num.value = state.amount[mode];
+  renderCalc();
+}
+
+document.querySelectorAll('input[name="mode"]').forEach((r) => r.addEventListener('change', () => setMode(r.value)));
+
+let calcGoalSent = false;
+const touchCalc = () => { if (!calcGoalSent) { calcGoalSent = true; goal('calc'); } };
+
+$('amtRange').addEventListener('input', (e) => {
+  state.amount[state.mode] = Number(e.target.value);
+  $('amtNum').value = e.target.value;
+  renderCalc(); touchCalc();
+});
+$('amtNum').addEventListener('input', (e) => {
+  const v = parseInt(e.target.value, 10);
+  if (!v || v < 1) return;                       // пока печатают, не мешаем
+  state.amount[state.mode] = Math.min(v, 1000000);
+  $('amtRange').value = Math.min(Math.max(state.amount[state.mode], MODES[state.mode].min), MODES[state.mode].max);
+  renderCalc(); touchCalc();
+});
+$('amtNum').addEventListener('change', (e) => { e.target.value = state.amount[state.mode]; });
+
+// «Получить КП с этим расчётом»: переносим расчёт в форму
+$('toOrder').addEventListener('click', () => {
+  const r = calculate();
+  state.note = `${r.text}. Ориентир стоимости: ${money(r.cost)}`;
+  $('fProduct').value = r.product;
+  $('calcLine').textContent = 'Расчёт: ' + state.note;
+  $('calcLine').hidden = false;
+  $('order').scrollIntoView({ behavior: 'smooth' });
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 5. ОТПРАВКА ЗАЯВОК В TELEGRAM (общая для формы и попапа)
+// ═════════════════════════════════════════════════════════════════
+function sendLead(fields, statusEl) {
+  const text = ['Запрос КП (демо-страница)', ...fields.filter(Boolean)].join('\n');
+  const link = `https://t.me/${MANAGER}?text=${encodeURIComponent(text)}`;
+  const opened = window.open(link, '_blank', 'noopener');
+  statusEl.innerHTML = `Если Telegram не открылся, <a href="${link}">нажмите сюда</a>.`;
+  if (!opened) window.location.href = link;
+}
+const phoneOk = (s) => s.replace(/\D/g, '').length >= 10;
+
+$('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const err = $('formError');
+  err.textContent = '';
+  if ($('fTrap').value) return;                  // защита от спама: бот заполнил скрытое поле
+  const name = $('fName').value.trim(), phone = $('fPhone').value.trim(), email = $('fEmail').value.trim();
+  if (!name) { err.textContent = 'Укажите имя.'; $('fName').focus(); return; }
+  if (!phoneOk(phone)) { err.textContent = 'Проверьте телефон: нужно минимум 10 цифр.'; $('fPhone').focus(); return; }
+  if (!/^\S+@\S+\.\S+$/.test(email)) { err.textContent = 'Проверьте email.'; $('fEmail').focus(); return; }
+  if (!$('fConsent').checked) { err.textContent = 'Нужно согласие на обработку персональных данных.'; $('fConsent').focus(); return; }
+
+  const sel = $('fProduct');
+  sendLead([`Продукт: ${sel.options[sel.selectedIndex].text}`, state.note && `Расчёт: ${state.note}`,
+    `Имя: ${name}`, `Телефон: ${phone}`, `Email: ${email}`], $('formStatus'));
+  goal('lead_form');
+  leadSent = true;
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 6. ВСПЛЫВАЮЩИЕ ОКНА
+// ═════════════════════════════════════════════════════════════════
+let lastFocus = null, leadSent = false, popupShown = false, orderSeen = false;
+const stored = (k, v) => { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } };
+
+function openModal(id) {
+  const m = $(id);
+  lastFocus = document.activeElement;
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  m.querySelector('.modal-x').focus();
+}
+function closeModal(m) {
+  m.classList.remove('open');
+  if (!document.querySelector('.modal.open')) document.body.style.overflow = '';
+  if (lastFocus) lastFocus.focus();
+}
+document.addEventListener('click', (e) => {
+  const open = e.target.closest('[data-open]');
+  if (open) { openModal(open.dataset.open); return; }
+  if (e.target.closest('[data-close]') || e.target.classList.contains('modal')) closeModal(e.target.closest('.modal'));
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(closeModal);
+});
+
+// Попап: не раньше чем через 15 секунд, один раз за визит
+let popupReady = false;
+if (stored('popupShown')) popupShown = true;
+function showPopup() {
+  const typing = document.activeElement && /^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName);
+  if (popupShown || leadSent || orderSeen || !popupReady || typing) return;
+  popupShown = true; stored('popupShown', '1');
+  openModal('popup');
+}
+setTimeout(() => { popupReady = true; }, 15000);
+// компьютер: курсор уходит за верхний край окна (к вкладкам или адресной строке)
+document.addEventListener('mouseout', (e) => { if (!e.relatedTarget && e.clientY <= 0) showPopup(); });
+// телефон: курсора нет, поэтому окно показываем, когда человек вернулся на вкладку после ухода
+let wasHidden = false;
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') wasHidden = true;
+  else if (wasHidden) showPopup();
+});
+
+$('popForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const err = $('popError'), phone = $('pPhone').value.trim();
+  err.textContent = '';
+  if (!phoneOk(phone)) { err.textContent = 'Проверьте телефон: нужно минимум 10 цифр.'; $('pPhone').focus(); return; }
+  if (!$('pConsent').checked) { err.textContent = 'Нужно согласие на обработку персональных данных.'; return; }
+  sendLead(['Запрос консультации (всплывающее окно)', `Телефон: ${phone}`], err);
+  goal('lead_popup');
+  leadSent = true;
+});
+
+// ═════════════════════════════════════════════════════════════════
+//  ЧАСТЬ 7. МЕНЮ: подсветка раздела и закрытие мобильного меню
+// ═════════════════════════════════════════════════════════════════
+$('menu').addEventListener('click', (e) => { if (e.target.closest('a')) $('menu').open = false; });
+
+const links = [...document.querySelectorAll('#navDesk a')];
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (en.target.id === 'order' && en.isIntersecting) orderSeen = true;
+    if (!en.isIntersecting) return;
+    links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + en.target.id)));
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+['choose', 'how', 'calc', 'trust', 'faq', 'order'].forEach((id) => io.observe($(id)));
+
+// ═════════════════════════════════════════════════════════════════
+//  ПЕРВЫЙ ЗАПУСК
+// ═════════════════════════════════════════════════════════════════
+renderChoice();
+setMode('room');
+</script>
+</body>
+</html>
